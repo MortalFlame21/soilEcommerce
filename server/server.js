@@ -1,21 +1,15 @@
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
 
+app.use(cors());
+
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.json({ message: "Hello World! testtst" });
 });
 
-const PORT = 5172;
-app.listen(
-  PORT,
-  console.log(
-    `Server is running on port ${PORT}. Visit http://localhost:${PORT}`
-  )
-);
-
-// fix:
-//  allow server to connect to client
-//  look at other code examples
-
-// client dep to add
-// axios
+const PORT = 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});

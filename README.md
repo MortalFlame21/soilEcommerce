@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/logo.png" alt="Soil Logo" height="80px">
+  <img src="client/public/logo.png" alt="Soil Logo" height="80px">
   <h1>SOIL</h1>
 </div>
 
@@ -35,7 +35,7 @@ https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a1
 - Axios
 - Express
 - mySQL
-- Cors?????????
+- Cors
 
 ## Acknowledgements
 
