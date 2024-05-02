@@ -5,7 +5,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-const PORT = 5173;
+const PORT = 5172;
 app.listen(
   PORT,
   console.log(
