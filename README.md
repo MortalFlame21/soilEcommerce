@@ -31,6 +31,11 @@ https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a1
 - [React-Bootstrap](https://react-bootstrap.github.io/)
 - [React-Router-Dom](https://reactrouter.com/web/guides/quick-start)
 - [React-Toastify](https://fkhadra.github.io/react-toastify/introduction/)
+- TypeORM
+- Axios
+- Express
+- mySQL
+- Cors?????????
 
 ## Acknowledgements
 
