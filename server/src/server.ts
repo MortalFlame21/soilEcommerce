@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 
-const cors = require("cors");
+import cors from "cors";
 
 const app = express();
 
