@@ -1,14 +1,18 @@
 import express, { Request, Response } from "express";
-
 import cors from "cors";
+import signUpRouter from "./routes/signup.js";
+import loginRouter from "./routes/login.js";
 
 const app = express();
 
 app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Hello World! test, test, test" });
+app.get("/", (res, req) => {
+  req.send("hello /");
 });
+
+app.use("/signup", signUpRouter);
+app.use("/login", loginRouter);
 
 const PORT = 4000;
 app.listen(PORT, () => {
