@@ -1,3 +1,4 @@
+// import { getUserByUsername } from "../service/user";
 import { addUser, userExists } from "./user";
 
 // success
@@ -16,6 +17,8 @@ function validateUsername(v: Record<string, string>): string {
   else if (!v.username.trim()) return "Enter a username!";
   else if (v.username.length < 5)
     return "Username must be \u2265 5 characters in length";
+  // else if ((await getUserByUsername(v.username)) == null)
+  // return "Username is already taken";
   return "";
 }
 
