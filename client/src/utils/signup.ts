@@ -1,4 +1,4 @@
-// import { getUserByUsername } from "../service/user";
+import { getUserByUsername } from "../service/user";
 import { addUser, userExists } from "./user";
 
 // success
@@ -12,13 +12,13 @@ function signupUser(v: Record<string, string>) {
 }
 
 // validate
-function validateUsername(v: Record<string, string>): string {
+async function validateUsername(v: Record<string, string>): Promise<string> {
   if (!v.username) return "Enter a username!";
   else if (!v.username.trim()) return "Enter a username!";
   else if (v.username.length < 5)
     return "Username must be \u2265 5 characters in length";
-  // else if ((await getUserByUsername(v.username)) == null)
-  // return "Username is already taken";
+  else if (await getUserByUsername(v.username))
+    return "Username is already taken";
   return "";
 }
 
@@ -51,10 +51,10 @@ function validateConfirmPassword(v: Record<string, string>): string {
   return "";
 }
 
-function validateSignUp(v: Record<string, string>) {
+async function validateSignUp(v: Record<string, string>) {
   const errors: Record<string, string> = {};
 
-  if (validateUsername(v)) errors.username = validateUsername(v);
+  if (await validateUsername(v)) errors.username = await validateUsername(v);
   if (validateEmail(v)) errors.email = validateEmail(v);
   if (validatePassword(v)) errors.password = validatePassword(v);
   if (validateConfirmPassword(v)) errors.cPassword = validateConfirmPassword(v);
