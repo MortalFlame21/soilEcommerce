@@ -4,5 +4,5 @@ export default {
   PASSWORD: "abc123",
   DB: "demo_fwp_registration_login_logout_post",
   DIALECT: "mysql",
-  PORT: 4000,
+  PORT: 3306, // DONT CHANGE THIS IS FOR MYSQL CONNECTION
 };
