@@ -1,6 +1,5 @@
 // db config
 import { DataSource } from "typeorm";
-import config from "./config.js";
 import { Users } from "./models/users.js";
 
 import dotenv from "dotenv";
