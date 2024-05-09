@@ -19,7 +19,7 @@ app.get("/", (res, req) => {
 
 app.use("/signup", signUpRouter);
 app.use("/login", loginRouter);
-app.use("/login", userRouter);
+app.use("/user", userRouter);
 
 AppDataSource.initialize()
   .then(() => console.log("Server is connected"))
