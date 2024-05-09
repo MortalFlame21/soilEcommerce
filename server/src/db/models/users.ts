@@ -12,19 +12,22 @@ export class Users {
   id: number;
 
   // will do unique l8r
-  @Length(10, 20)
+  @Length(5, 30, {
+    message: "Username must be \u2265 5 and \u2264 30 characters in length!",
+  })
   @Column()
   username: string;
 
   // will do unique l8r
-  @IsEmail()
+  @IsEmail(undefined, {
+    message: "Invalid email sent",
+  })
   @Column()
   email: string;
 
   @Column()
   hash: string;
 
-  @IsDate()
   @CreateDateColumn()
   dateJoined: Date;
 }

@@ -13,3 +13,12 @@ export async function getUserByEmail(email: string) {
   const res = await axios.get(`${config.HOST}/user/email/${email}`);
   return res.data.length > 0;
 }
+
+export async function signup(v: Record<string, string>) {
+  const res = await axios.post(`${config.HOST}/user`, {
+    username: v.username,
+    email: v.email,
+    password: v.password,
+  });
+  return res.data.length > 0;
+}
