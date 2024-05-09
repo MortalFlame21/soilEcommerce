@@ -22,12 +22,30 @@ userRouter.get("/", async (req, res) => {
   res.send("Hello /user");
 });
 
-userRouter.get("/:username", async (req, res) => {
-  const users = await AppDataSource.getRepository(Users).find({
-    where: { username: req.params.username },
-  });
+// find by username
+userRouter.get("/username/:username", async (req, res) => {
+  try {
+    const users = await AppDataSource.getRepository(Users).find({
+      where: { username: req.params.username },
+    });
 
-  res.send(users);
+    res.send(users);
+  } catch {
+    res.send([]);
+  }
+});
+
+// find by email
+userRouter.get("/email/:email", async (req, res) => {
+  try {
+    const users = await AppDataSource.getRepository(Users).find({
+      where: { email: req.params.email },
+    });
+
+    res.send(users);
+  } catch {
+    res.send([]);
+  }
 });
 
 export default userRouter;

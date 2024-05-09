@@ -1,5 +1,5 @@
-import { getUserByUsername } from "../service/user";
-import { addUser, userExists } from "./user";
+import { getUserByUsername, getUserByEmail } from "../service/user";
+import { addUser } from "./user";
 
 // success
 function signupUser(v: Record<string, string>) {
@@ -22,11 +22,11 @@ async function validateUsername(v: Record<string, string>): Promise<string> {
   return "";
 }
 
-function validateEmail(v: Record<string, string>): string {
+async function validateEmail(v: Record<string, string>): Promise<string> {
   if (!v.email) return "Enter a email!";
   else if (!/\S+@\S+\.\S+/.test(v.email)) return "Enter a valid email address!";
-  else if (userExists(v.email)) return "Email already taken!";
-
+  // else if (userExists(v.email)) return "Email already taken!";
+  else if (await getUserByEmail(v.email)) return "Email already taken!";
   return "";
 }
 
@@ -55,7 +55,7 @@ async function validateSignUp(v: Record<string, string>) {
   const errors: Record<string, string> = {};
 
   if (await validateUsername(v)) errors.username = await validateUsername(v);
-  if (validateEmail(v)) errors.email = validateEmail(v);
+  if (await validateEmail(v)) errors.email = await validateEmail(v);
   if (validatePassword(v)) errors.password = validatePassword(v);
   if (validateConfirmPassword(v)) errors.cPassword = validateConfirmPassword(v);
 
