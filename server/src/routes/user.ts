@@ -1,10 +1,10 @@
 import express from "express";
 import AppDataSource from "../db/dataSource.js";
 import { Users } from "../db/models/users.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { validate } from "class-validator";
 
-const userRouter = express.Router(); // for validation only
+const userRouter = express.Router();
 
 // find by username
 userRouter.get("/username/:username", async (req, res) => {

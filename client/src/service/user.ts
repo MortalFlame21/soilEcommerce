@@ -8,6 +8,7 @@ export async function getUserByUsername(username: string) {
   return res.data.length > 0;
 }
 
+// rename above and below to check if register etc.
 export async function getUserByEmail(email: string) {
   // console.log("this is being called");
   const res = await axios.get(`${config.HOST}/user/email/${email}`);
@@ -21,4 +22,9 @@ export async function signup(v: Record<string, string>) {
     password: v.password,
   });
   return res.data.length > 0;
+}
+
+export async function getRegisteredUser(email: string) {
+  const res = await axios.get(`${config.HOST}/user/email/${email}`);
+  return res.data.at(0);
 }
