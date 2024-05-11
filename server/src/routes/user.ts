@@ -41,15 +41,14 @@ userRouter.post("/", async (req, res, next) => {
     if (validatePassword(password)) {
       res.send(validatePassword(password));
       next();
+      return;
     }
-    const errors = await validateUsernamePassword(username, email);
+    const errors = await validateUsernameEmail(username, email);
     if (errors.length > 0) {
       res.send(errors);
       next();
+      return;
     }
-
-    // todo:
-    // check if user exists
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -67,20 +66,29 @@ userRouter.post("/", async (req, res, next) => {
 
     res.send([]);
   } catch (e) {
-    console.log(e);
-    console.log("!!!!!!!! error !!!!!!!");
-    res.send(e);
+    res.send(["Server error"]);
   }
 });
 
-async function validateUsernamePassword(username: string, email: string) {
+async function validateUsernameEmail(username: string, email: string) {
   const user = new Users();
   user.username = username;
   user.email = email;
 
   const errors = await validate(user);
 
-  console.log("errors", errors);
+  // validate its uniqueness
+  const usersWithUsername = await AppDataSource.getRepository(Users).find({
+    where: { username: username },
+  });
+  if (usersWithUsername.length > 0)
+    errors.push({ property: "email", value: "Username exists" });
+
+  const usersWithEmail = await AppDataSource.getRepository(Users).find({
+    where: { email: email },
+  });
+  if (usersWithEmail.length > 0)
+    errors.push({ property: "email", value: "Email exists" });
 
   return errors;
 }
@@ -90,6 +98,7 @@ function validatePassword(password: string) {
     "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()_+-={};':,.<>?/|\\\"])"
   );
 
+  console.log("password", password);
   if (!password) return "Enter a password!";
   else if (password.length < 10)
     return "Password must be \u2265 10 characters in length";

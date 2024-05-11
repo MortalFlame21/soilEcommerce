@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
 } from "typeorm";
-import { IsDate, IsEmail, Length } from "class-validator";
+import { IsEmail, Length } from "class-validator";
 
 @Entity()
 export class Users {
@@ -15,14 +15,14 @@ export class Users {
   @Length(5, 30, {
     message: "Username must be \u2265 5 and \u2264 30 characters in length!",
   })
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   // will do unique l8r
   @IsEmail(undefined, {
-    message: "Invalid email sent",
+    message: "Invalid email!",
   })
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
