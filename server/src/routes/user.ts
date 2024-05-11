@@ -4,7 +4,7 @@ import { Users } from "../db/models/users.js";
 import bcrypt from "bcryptjs";
 import { validate } from "class-validator";
 
-const userRouter = express.Router();
+const userRouter = express.Router(); // /user/...
 
 // find by username
 userRouter.get("/username/:username", async (req, res) => {
@@ -32,6 +32,7 @@ userRouter.get("/email/:email", async (req, res) => {
   }
 });
 
+// user creation
 userRouter.post("/", async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -47,6 +48,7 @@ userRouter.post("/", async (req, res, next) => {
       next();
     }
 
+    // todo:
     // check if user exists
 
     const hashedPassword = await bcrypt.hash(password, 10);

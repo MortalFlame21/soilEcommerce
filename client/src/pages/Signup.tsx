@@ -7,8 +7,7 @@ import { toast } from "react-toastify";
 
 import { AuthConsumer } from "../components/AuthContext";
 import useForm from "../utils/useForm";
-import { /*signupUser,*/ validateSignUp } from "../utils/signup";
-import { signup } from "../service/user";
+import { signupUser, validateSignUp } from "../utils/signup";
 
 const info = (
   <svg
@@ -37,12 +36,11 @@ function Signup() {
   }, [user, nav]);
 
   const successSignUp = async () => {
-    // signupUser(values);
-    if (!(await signup(values))) {
+    if (await signupUser(values)) {
       toast.success(`Successfully signed up!`);
-      // nav("/login", { replace: true });
+      nav("/login", { replace: true });
     } else {
-      toast.success(`Sign up fail`);
+      toast.success(`Server error, signup fail`);
     }
   };
 

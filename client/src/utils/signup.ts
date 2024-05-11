@@ -1,14 +1,13 @@
-import { getUserByUsername, getUserByEmail } from "../service/user";
-import { addUser } from "./user";
+import {
+  findUserByEmail,
+  findUserByUsername,
+  createUser,
+} from "../service/user";
 
 // success
-function signupUser(v: Record<string, string>) {
-  addUser({
-    username: v.username,
-    email: v.email,
-    password: v.password,
-    date: new Date(),
-  });
+async function signupUser(v: Record<string, string>) {
+  const res = await createUser(v);
+  return res;
 }
 
 // validate
@@ -17,7 +16,7 @@ async function validateUsername(v: Record<string, string>): Promise<string> {
   else if (!v.username.trim()) return "Enter a username!";
   else if (v.username.length < 5)
     return "Username must be \u2265 5 characters in length";
-  else if (await getUserByUsername(v.username))
+  else if (await findUserByUsername(v.username))
     return "Username is already taken";
   return "";
 }
@@ -26,7 +25,7 @@ async function validateEmail(v: Record<string, string>): Promise<string> {
   if (!v.email) return "Enter a email!";
   else if (!/\S+@\S+\.\S+/.test(v.email)) return "Enter a valid email address!";
   // else if (userExists(v.email)) return "Email already taken!";
-  else if (await getUserByEmail(v.email)) return "Email already taken!";
+  else if (await findUserByEmail(v.email)) return "Email already taken!";
   return "";
 }
 

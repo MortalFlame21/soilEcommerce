@@ -4,12 +4,6 @@ import bcrypt from "bcryptjs";
 async function validateLoginIn(v: Record<string, string>) {
   const errors: Record<string, string> = {};
 
-  // .trim() for whitespaces
-  // if (v.email.trim() && !userExists(v.email)) {
-  //   errors.email = "Email is not registered!";
-  //   return errors;
-  // }
-
   let user;
   try {
     user = await getRegisteredUser(v.email);
@@ -23,7 +17,7 @@ async function validateLoginIn(v: Record<string, string>) {
   // else errors.email = "pass?";
 
   if (!v.password) errors.password = "Enter a password!";
-  else if (await checkUserPassword(v!.password, user?.hash))
+  else if (user && (await checkUserPassword(v!.password, user?.hash)))
     errors.password = "Password is incorrect!";
   // else errors.password = "pass?";
 
