@@ -14,8 +14,8 @@ export class Product {
   @Column({ type: "text" })
   description: string;
 
-  @Column({ type: "longblob" })
-  image: Buffer;
+  @Column({ type: "text" })
+  image: string;
 
   @Column({ type: "boolean", default: false })
   onSpecial: boolean;
