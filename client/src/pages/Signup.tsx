@@ -35,10 +35,13 @@ function Signup() {
     }
   }, [user, nav]);
 
-  const successSignUp = () => {
-    signupUser(values);
-    toast.success(`Successfully signed up!`);
-    nav("/login", { replace: true });
+  const successSignUp = async () => {
+    if (await signupUser(values)) {
+      toast.success(`Successfully signed up!`);
+      nav("/login", { replace: true });
+    } else {
+      toast.success(`Server error, signup fail`);
+    }
   };
 
   const { values, handleChangeValues, handleSubmit, errors } = useForm(

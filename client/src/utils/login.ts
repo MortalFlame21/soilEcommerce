@@ -1,24 +1,37 @@
-import { getUser, userExists } from "./user";
+import { getRegisteredUser } from "../service/user";
+import bcrypt from "bcryptjs";
 
-function validateLoginIn(v: Record<string, string>) {
+async function validateLoginIn(v: Record<string, string>) {
   const errors: Record<string, string> = {};
 
-  // .trim() for whitespaces
-  if (v.email.trim() && !userExists(v.email)) {
-    errors.email = "Email is not registered!";
-    return errors;
+  let user;
+  try {
+    user = await getRegisteredUser(v.email);
+  } catch {
+    errors.email = "Something went wrong when retrieving by email.";
   }
-
-  const u = getUser(v.email);
 
   if (!v.email) errors.email = "Enter an email!";
   else if (!v.email.trim()) errors.email = "Enter a email!";
+  else if (!user) errors.email = "Email is not registered!";
+  // else errors.email = "pass?";
 
   if (!v.password) errors.password = "Enter a password!";
-  else if (v.password !== u?.password)
+  else if (user && (await checkUserPassword(v!.password, user?.hash)))
     errors.password = "Password is incorrect!";
+  // else errors.password = "pass?";
 
   return errors;
+}
+
+async function checkUserPassword(password: string, hash: string) {
+  try {
+    const valid = await bcrypt.compare(password, hash);
+    if (!valid) return "fail";
+    return "";
+  } catch {
+    return "fail";
+  }
 }
 
 export { validateLoginIn };

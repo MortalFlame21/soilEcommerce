@@ -17,9 +17,20 @@ SOIL is a student-made website built with React. It's a place for users to learn
 ## Usage
 
 1. Clone the repo.
-2. Navigate into `s4018548-s4007180-a1`
-3. Install dependencies, `npm i`
-4. Start the server, `npm start`
+2. Create `server/.env` file containing
+
+```
+HOST = HOST_URL
+USER_NAME = USERNAME
+PASSWORD = PASSWORD
+DB = DB_TO_CONNECT_TO
+DIALECT = mysql
+PORT = 3306
+```
+
+3. Navigate into `s4018548-s4007180-a1`
+4. Install dependencies, `npm i`
+5. Start the server, `npm start`
 
 ## GitHub Link
 
@@ -47,3 +58,11 @@ https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a1
 
 - [Russell Sheikh](https://github.com/Russell0014)
 - [Mark Castillo](https://github.com/2trill2code)
+
+## Temporarly issues
+
+- Changed useForm to async, test:
+  - edit
+  - login
+  - signup
+  - checkout
