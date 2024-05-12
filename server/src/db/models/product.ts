@@ -18,7 +18,7 @@ export class Product {
   image: Buffer;
 
   @Column({ type: "boolean", default: false })
-  onSale: boolean;
+  onSpecial: boolean;
 
   @Column({ type: "int" })
   size: number;
@@ -26,4 +26,3 @@ export class Product {
   @Column({ type: "varchar", length: 50 })
   unit: string;
 }
-

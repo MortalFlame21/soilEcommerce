@@ -11,7 +11,7 @@ productsRouter.get("/", (req, res) => {
 //create a product in the database
 productsRouter.post("/", async (req, res) => {
   try {
-    const { product_id, name, image, description, price, onSale, size, unit } =
+    const { product_id, name, image, description, price, onSpecial, size, unit } =
       req.body;
 
     const newProduct = AppDataSource.manager.getRepository(Product).create({
@@ -20,7 +20,7 @@ productsRouter.post("/", async (req, res) => {
       image: image,
       description: description,
       price: price,
-      onSale: onSale,
+      onSpecial: onSpecial,
       size: size,
       unit: unit,
     });
