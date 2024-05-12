@@ -1,13 +1,6 @@
 import axios from "axios";
 import config from "./config";
-
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  dateJoined: Date;
-  hash: string;
-};
+import { User } from "../utils/user";
 
 // find why set timeout handler took x time
 export async function findUserByUsername(username: string) {
@@ -35,7 +28,6 @@ export async function createUser(v: Record<string, string>) {
       email: v.email,
       password: v.password,
     });
-    console.log(res.data);
     return res.data.length == 0; // [] is returned
   } catch (e) {
     return false;

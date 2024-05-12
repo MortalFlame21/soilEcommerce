@@ -6,10 +6,11 @@ const USER_LIST_KEY = "__USERS";
 const USER_KEY = "__USER";
 
 export type User = {
+  id: number;
   username: string;
   email: string;
-  password: string;
-  date: Date;
+  hash: string;
+  dateJoined: Date;
 };
 
 // we store users in an object for constant time user access
@@ -46,9 +47,9 @@ export function userExists(email: string): boolean {
   return !!getUser(email);
 }
 
-export function saveLoggedIn(email: string): void {
+export async function saveLoggedIn(user: User): Promise<void> {
   sessionStorage.clear(); // remove other possibly added key/values
-  sessionStorage.setItem(USER_KEY, JSON.stringify(getUser(email)));
+  sessionStorage.setItem(USER_KEY, JSON.stringify(user || {}));
 }
 
 export function getLoggedIn(): User | undefined {

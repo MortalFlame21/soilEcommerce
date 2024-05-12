@@ -20,8 +20,9 @@ function Login() {
     }
   }, [user, nav]);
 
-  const successLogin = () => {
-    login(values.email);
+  const successLogin = async () => {
+    await login(values.email);
+
     toast.success("Successfully logged in!");
     nav("/profile", { replace: true });
   };

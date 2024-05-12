@@ -1,14 +1,9 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 
-import {
-  User,
-  getUser,
-  logoutUser,
-  saveLoggedIn,
-  getLoggedIn,
-} from "../utils/user";
+import { User, logoutUser, saveLoggedIn, getLoggedIn } from "../utils/user";
 
 import { emptyCart } from "../utils/cart";
+import { getRegisteredUser } from "../service/user";
 
 // global user state property, handles easy login and logout
 // references used:
@@ -31,9 +26,11 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 function useAuth(): AuthContextProps {
   const [user, setUser] = useState<User | undefined>(getLoggedIn());
 
-  const login = (email: string) => {
-    saveLoggedIn(email);
-    setUser(getUser(email));
+  const login = async (email: string) => {
+    // we 100% know that if this is called then the user exists
+    const user = await getRegisteredUser(email);
+    saveLoggedIn(user!);
+    setUser(user);
   };
 
   const logout = () => {

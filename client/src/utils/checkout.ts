@@ -65,7 +65,7 @@ function validateCardCCV(v: Record<string, string>): string {
   return "";
 }
 
-function validateCheckout(v: Record<string, string>) {
+async function validateCheckout(v: Record<string, string>) {
   const errors: Record<string, string> = {};
 
   if (validateInput(v.fname)) errors.fname = "Enter your first name!";
