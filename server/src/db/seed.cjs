@@ -1,5 +1,5 @@
 const axios = require("axios");
-const store = require("/home/russell/rmit/full_stack_dev/project/s4018548-s4007180-a2/client/src/data/store.json");
+const store = require("../../../client/src/data/store.json");
 
 async function addProduct() {
   store.products.forEach(async (product) => {
