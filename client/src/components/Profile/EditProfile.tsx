@@ -16,7 +16,7 @@ import {
 } from "../../utils/edit";
 import { toast } from "react-toastify";
 
-type EditInputs = "username" | "email" | "password";
+type EditInputs = "username" | "email" | "password" | "hash";
 
 const info = (
   <svg
@@ -49,7 +49,9 @@ function EditProfile() {
 
   // if values is not there and it is not an empty string it falls back to user input
   const setInputValue = (i: EditInputs) => {
-    values[i] = values[i] || values[i] == "" ? values[i] : user![i];
+    if (i !== "password")
+      values[i] = values[i] || values[i] == "" ? values[i] : user![i];
+    else values[i] = values[i] || values[i] == "" ? values[i] : "";
     return values[i];
   };
 
@@ -77,16 +79,22 @@ function EditProfile() {
   };
 
   const cancelEditInput = (i: EditInputs) => {
-    values[i] = values[i] ? prevValues.current[i] : user![i]; // reset back to og user values or prev value edited
+    if (i !== "password")
+      values[i] = values[i] ? prevValues.current[i] : user![i];
+    // reset back to og user values or prev value edited
+    else values[i] = values[i] || values[i] == "" ? values[i] : "";
     setDisableInput(i); // close the input
   };
 
   const canResetEditInput = (i: EditInputs) => {
-    return isDisable[i] && values[i] != user![i]; // is not editing and not same values
+    if (i !== "password") return isDisable[i] && values[i] != user![i];
+    // is not editing and not same values
+    else return isDisable[i] && values[i];
   };
 
   const resetEditInput = (i: EditInputs) => {
-    values[i] = user![i]; // reset back
+    if (i !== "password") values[i] = user![i]; // reset back
+    else values[i] = "";
     setIsEdited(checkIfEdited(values, user)); // check whether to edit button
     setIsDisable({ ...isDisable, [i]: !!isDisable[i] }); // force a rerender removing the cancel button
   };
@@ -104,7 +112,7 @@ function EditProfile() {
       delete errors.cPassword;
       setIsEdited(false);
     },
-    () => {
+    async () => {
       return validateEdit(values, user);
     }
   );
@@ -112,21 +120,11 @@ function EditProfile() {
   return (
     <>
       <h3>My profile</h3>
-      <p>You joined: {user?.date.toLocaleString().slice(0, -14)}</p>
+      <p>You joined: {user?.dateJoined.toLocaleString().slice(0, -14)}</p>
       <hr />
       <Form onSubmit={handleSubmit} className="mb-5">
         <Form.Group className="mb-3">
           <h4>Username</h4>
-
-          <Form.Control
-            type="hidden"
-            name="date"
-            value={
-              (values.date = !values.date
-                ? user!.date.toLocaleString()
-                : values.date)
-            }
-          />
 
           <InputGroup className="mb-3">
             <Form.Control
