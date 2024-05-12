@@ -8,31 +8,28 @@ productsRouter.get("/", (req, res) => {
   res.send("hello /products");
 });
 
+//create a product in the database
 productsRouter.post("/", async (req, res) => {
   try {
-    const { product_id, name, price, description, image, onSale, size, unit } =
+    const { product_id, name, image, description, price, onSale, size, unit } =
       req.body;
 
-    await AppDataSource.createQueryBuilder()
-      .insert()
-      .into(Product)
-      .values([
-        {
-          product_id: product_id,
-          name: name,
-          image: image,
-          description: description,
-          price: price,
-          onSale: onSale,
-          size: size,
-          unit: unit,
-        },
-      ])
-      .execute();
+    const newProduct = AppDataSource.manager.getRepository(Product).create({
+      product_id: product_id,
+      name: name,
+      image: image,
+      description: description,
+      price: price,
+      onSale: onSale,
+      size: size,
+      unit: unit,
+    });
 
-    res.send("product created");
-  } catch {
-    res.send("error");
+    await AppDataSource.manager.getRepository(Product).save(newProduct);
+
+    res.send(newProduct);
+  } catch (error) {
+    res.send(error);
   }
 });
 
