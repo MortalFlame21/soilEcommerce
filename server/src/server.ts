@@ -6,6 +6,7 @@ import AppDataSource from "./db/dataSource.js";
 import signUpRouter from "./routes/signup.js";
 import loginRouter from "./routes/login.js";
 import userRouter from "./routes/user.js";
+import productsRouter from "./routes/products.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get("/", (res, req) => {
 app.use("/signup", signUpRouter);
 app.use("/login", loginRouter);
 app.use("/user", userRouter);
+app.use("/products", productsRouter);
 
 AppDataSource.initialize()
   .then(() => console.log("Server is connected"))

@@ -10,5 +10,5 @@
     "outDir": "dist",
     "strict": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/db/seed.cjs"]
 }

@@ -98,7 +98,6 @@ function validatePassword(password: string) {
     "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()_+-={};':,.<>?/|\\\"])"
   );
 
-  console.log("password", password);
   if (!password) return "Enter a password!";
   else if (password.length < 10)
     return "Password must be \u2265 10 characters in length";
