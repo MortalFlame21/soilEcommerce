@@ -9,9 +9,6 @@ exports.all = async (req, res) => {
 
   // Learn more about eager loading here: https://sequelize.org/master/manual/eager-loading.html
 
-  products = {
-    "test": "test"
-  }
 
   res.json(products);
 };
