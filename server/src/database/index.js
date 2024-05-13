@@ -1,5 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const config = require("./config.js");
+const storeData = require("../../../client/src/data/store.json");
+const fs = require('fs');
+const path = require('path');
 
 const db = {
   Op: Sequelize.Op
@@ -32,19 +35,31 @@ db.sync = async () => {
 };
 
 async function seedData() {
-  const count = await db.user.count();
+
+  const countProducts = await db.product.count();
 
   // Only seed data if necessary.
-  if (count > 0)
+  if (countProducts > 0)
     return;
 
-  // const argon2 = require("argon2");
+  storeData.products.forEach(async (product) => {
+    console.log(product);
 
-  // let hash = await argon2.hash("abc123", { type: argon2.argon2id });
-  await db.user.create({ username: "mbolger", password_hash: "fygewgfyew", first_name: "Matthew", last_name: "Bolger" });
+    // Read the image file and convert it to base64
+    let imagePath = path.join("/home/russell/rmit/full_stack_dev/project/s4018548-s4007180-a2/client/"+product.image);
+    let imageAsBase64 = fs.readFileSync(imagePath, { encoding: 'binary' });
 
-  // hash = await argon2.hash("def456", { type: argon2.argon2id });
-  await db.user.create({ username: "shekhar", password_hash: "gdeqygeygdeq", first_name: "Shekhar", last_name: "Kalra" });
+    await db.product.create({
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      image: imageAsBase64,
+      onSpecial: product.onSpecial,
+      size: product.size,
+      unit: product.unit
+    });
+  });
+
 }
 
 module.exports = db;

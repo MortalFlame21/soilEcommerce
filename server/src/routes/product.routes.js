@@ -9,5 +9,5 @@ module.exports = (express, app) => {
   router.post("/", controller.create);
 
   // Add routes to server.
-  app.use("/api/posts", router);
+  app.use("/products", router);
 };
