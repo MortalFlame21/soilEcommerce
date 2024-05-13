@@ -47,7 +47,7 @@ async function seedData() {
 
     // Read the image file and convert it to base64
     let imagePath = path.join(__dirname, '..', '..', '..', 'client', product.image);
-    let imageAsBase64 = fs.readFileSync(imagePath, { encoding: 'binary' });
+    let imageAsBase64 = fs.readFileSync(imagePath, { encoding: 'base64' });
 
     await db.product.create({
       name: product.name,
