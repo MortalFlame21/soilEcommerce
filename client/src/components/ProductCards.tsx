@@ -1,17 +1,35 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import productsData from "../data/store.json";
 import { Button, Card, Col } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import { toast } from "react-toastify";
 
+import { allProducts, ProductType } from "../service/product";
+
 function ProductCards() {
-  const numberOfProducts = productsData.products.length;
+  const { updateItem, getProductInCart } = CartConsumer();
+  const [data, setData] = useState<ProductType[] | null>(null);
+
+  useEffect(() => {
+    allProducts().then((value) => {
+      setData(value);
+    });
+  }, []);
+
+  if (data === null) {
+    return <div>Loading...</div>;
+  }
+
+  const numberOfProducts = data.length;
   const products = [];
 
-  const { updateItem, getProductInCart } = CartConsumer();
-
   for (let i = 0; i < numberOfProducts; i++) {
-    const productInCart = getProductInCart(productsData.products[i]);
+    const productInCart = getProductInCart(data[i]);
+    const base64image = data[i].image;
+
+    console.log(base64image);
+
     products.push(
       <Col
         key={i}
@@ -30,7 +48,7 @@ function ProductCards() {
         >
           <Card.Body className="">
             <Link
-              to={"/product/" + productsData.products[i].id}
+              to={"/product/" + data[i].id}
               style={{ textDecoration: "none" }}
             >
               <div
@@ -57,7 +75,7 @@ function ProductCards() {
                   className="rounded-2 overflow-hidden"
                 >
                   <img
-                    src={productsData.products[i].image}
+                    src={`data:image/jpg;base64,${base64image}`}
                     className="mx-auto d-block rounded-2"
                     style={{ width: "100%", height: "auto" }}
                   />
@@ -66,13 +84,11 @@ function ProductCards() {
 
               <p className="pt-4">
                 <b>
-                  {productsData.products[i].name} |{" "}
-                  {productsData.products[i].size}{" "}
-                  {productsData.products[i].unit}
+                  {data[i].name} | {data[i].size} {data[i].unit}
                 </b>
               </p>
               <p>
-                <b>${productsData.products[i].price}</b>
+                <b>${data[i].price}</b>
               </p>
             </Link>
 
@@ -86,12 +102,7 @@ function ProductCards() {
                 minWidth: "70%",
               }}
               onClick={() => {
-                if (
-                  updateItem(
-                    productsData.products[i],
-                    (productInCart?.quantity ?? 0) + 1
-                  )
-                )
+                if (updateItem(data[i], (productInCart?.quantity ?? 0) + 1))
                   toast.success(
                     `Added ${productsData.products[
                       i
