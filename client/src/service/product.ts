@@ -29,3 +29,12 @@ export async function allProducts() {
     return [];
   }
 }
+
+export async function productImageByID(id: number) {
+  try {
+    const res = await axios.get(`${config.HOST}/products/${id}/image`);
+    return res.data;
+  } catch {
+    return "";
+  }
+}
