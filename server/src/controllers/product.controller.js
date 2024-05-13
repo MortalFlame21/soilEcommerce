@@ -1,6 +1,6 @@
 const db = require("../database");
 
-// Select all posts from the database.
+// Select all product from the database.
 exports.all = async (req, res) => {
   const products = await db.product.findAll();
 
@@ -12,8 +12,14 @@ exports.all = async (req, res) => {
 
   res.json(products);
 };
+// Select a single product by its id.
+exports.one = async (req, res) => {
+  const product = await db.product.findByPk(req.params.id);
 
-// Create a post in the database.
+  res.json(product);
+};
+
+// Create a product in the database.
 exports.create = async (req, res) => {
   const product = await db.product.create({
     name: req.body.name,
