@@ -51,7 +51,7 @@ function ProductCards() {
         >
           <Card.Body className="">
             <Link
-              to={"/product/" + data[i].id}
+              to={"/product/" + data[i].product_id}
               style={{ textDecoration: "none" }}
             >
               <div

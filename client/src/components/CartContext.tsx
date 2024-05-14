@@ -55,7 +55,7 @@ function useUserCart(): CartContextProps {
   };
 
   const getProductInCart = (p: Product | undefined) => {
-    if (user && p) return userCart.find((pCart) => pCart.item.id === p.id);
+    if (user && p) return userCart.find((pCart) => pCart.item.product_id === p.product_id);
     return undefined;
   };
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import config from "./config";
 
 export type ProductType = {
-  id: number;
+  product_id: number;
   name: string;
   image: string;
   description: string;

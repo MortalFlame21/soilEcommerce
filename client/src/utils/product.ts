@@ -5,7 +5,7 @@ import store from "../data/store.json";
 const PRODUCT_LIST_KEY = "__PRODUCTS";
 
 export type Product = {
-  id: number;
+  product_id: number;
   name: string;
   image: string;
   description: string;
@@ -35,7 +35,7 @@ export function getProduct(id: number): Product | undefined {
   const productList = getProductList();
   let product = undefined;
   productList.forEach((p) => {
-    if (p.id === id) product = p;
+    if (p.product_id === id) product = p;
   });
   return product;
 }
