@@ -201,14 +201,14 @@ function EditProfile() {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <h4>Password</h4>
+          <h4>Set new password</h4>
           <InputGroup className="mb-3">
             <Form.Control
               type={isShow.password ? "text" : "password"}
               name="password"
               onChange={handleChangeValues}
               value={setInputValue("password")}
-              placeholder="Enter password"
+              placeholder="Enter new password"
               disabled={isDisable.password}
             />
             <InputGroup.Text
@@ -290,14 +290,14 @@ function EditProfile() {
         {(!isDisable.password ||
           (canResetEditInput("password") && isDisable.password)) && (
           <Form.Group className="mb-3">
-            <Form.Label>Confirm password</Form.Label>
+            <Form.Label>Confirm new password</Form.Label>
             <InputGroup className="mb-3">
               <Form.Control
                 type={isShow.cpassword ? "text" : "password"}
                 name="cPassword"
                 onChange={handleChangeValues}
                 value={values.cPassword || ""}
-                placeholder="Confirm password"
+                placeholder="Confirm new password"
                 disabled={isDisable.password}
               />
               <InputGroup.Text
