@@ -38,14 +38,11 @@ async function seedData() {
   storeData.products.forEach(async (product) => {
     console.log(product);
 
-    // Read the image file and convert it to base64
-    let imagePath = path.join(__dirname, '..', '..', '..', 'client', product.image);
-    let imageAsBase64 = fs.readFileSync(imagePath, 'base64');
     await db.product.create({
       name: product.name,
       price: product.price,
       description: product.description,
-      image: imageAsBase64,
+      image: product.image,
       onSpecial: product.onSpecial,
       size: product.size,
       unit: product.unit,

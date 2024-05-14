@@ -1,25 +1,18 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import productsData from "../data/store.json";
 import { Button, Card, Col } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import { toast } from "react-toastify";
 
-import { allProducts, ProductType, productImageByID } from "../service/product";
+import { allProducts, ProductType } from "../service/product";
 
 function ProductCards() {
   const { updateItem, getProductInCart } = CartConsumer();
   const [data, setData] = useState<ProductType[] | null>(null);
 
   useEffect(() => {
-    allProducts().then(async (products) => {
-      const productsWithImages = await Promise.all(
-        products.map(async (product: ProductType, index: number) => {
-          const base64image = await productImageByID(index + 1);
-          return { ...product, image: base64image };
-        })
-      );
-      setData(productsWithImages);
+    allProducts().then((value) => {
+      setData(value);
     });
   }, []);
 
@@ -57,7 +50,7 @@ function ProductCards() {
               <div
                 style={{ maxHeight: 180, minHeight: 100, overflow: "hidden" }}
               >
-                {productsData.products[i].onSpecial ? (
+                {data[i].onSpecial ? (
                   <div
                     className=""
                     style={{
@@ -78,7 +71,7 @@ function ProductCards() {
                   className="rounded-2 overflow-hidden"
                 >
                   <img
-                    src={`data:image/jpg;base64,${data[i].image}`}
+                    src={data[i].image}
                     className="mx-auto d-block rounded-2"
                     style={{ width: "100%", height: "auto" }}
                   />
@@ -107,9 +100,7 @@ function ProductCards() {
               onClick={() => {
                 if (updateItem(data[i], (productInCart?.quantity ?? 0) + 1))
                   toast.success(
-                    `Added ${productsData.products[
-                      i
-                    ].name.toLowerCase()} to cart`
+                    `Added ${data[i].name[i].toLowerCase()} to cart`
                   );
                 else toast.warning("Login to add items to cart.");
               }}
