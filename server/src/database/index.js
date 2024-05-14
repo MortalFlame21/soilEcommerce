@@ -3,6 +3,7 @@ const config = require("./config.js");
 const storeData = require("../../../client/src/data/store.json");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcryptjs");
 
 const db = {
   Op: Sequelize.Op,
@@ -51,19 +52,26 @@ async function seedData() {
 }
 
 async function seedUsers() {
+  // ! NO VALIDATION IS SET HERE !
   const defaultUsers = [
     {
       username: "test@TEST.com",
       email: "test@TEST.com",
       hash: "test@TEST.com",
     },
+    {
+      username: "username",
+      email: "email@email.com",
+      hash: "hash",
+    },
   ];
 
   // simple solution for existing users
   defaultUsers.forEach(async (user) => {
     try {
+      user.hash = await bcrypt.hash(user.hash, 1); // 1 salt round
       await db.users.create(user);
-    } catch {
+    } catch (e) {
       console.log("User exists skip");
     }
   });

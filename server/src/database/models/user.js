@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) =>
         allowNull: false,
         unique: true,
         validate: {
-          min: 1,
+          min: 5,
           max: 30,
         },
       },

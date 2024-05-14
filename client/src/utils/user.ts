@@ -10,7 +10,7 @@ export type User = {
   username: string;
   email: string;
   hash: string;
-  dateJoined: Date;
+  date_joined: Date;
 };
 
 // we store users in an object for constant time user access

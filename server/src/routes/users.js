@@ -1,4 +1,6 @@
 const db = require("../database");
+const validate = require("validator");
+const bcrypt = require("bcryptjs");
 
 module.exports = (express, app) => {
   const userRouter = express.Router();
@@ -35,18 +37,69 @@ module.exports = (express, app) => {
   // user creation
   userRouter.post("/", async (req, res, next) => {
     try {
-      res.send("huh post");
+      const { username, email, password } = req.body;
+
+      const passwordInvalid = validatePassword(password);
+      if (passwordInvalid) {
+        res.send([passwordInvalid]);
+        next();
+        return;
+      }
+
+      const errors = await validateUsernameEmail(username, email);
+      if (errors.length > 0) {
+        res.send(errors);
+        next();
+        return;
+      }
+
+      const passwordHashed = await bcrypt.hash(password, 10);
+
+      await db.users.create({
+        username: username,
+        email: email,
+        hash: passwordHashed,
+      });
+
+      res.send([]);
     } catch (e) {
       console.log(e);
-      res.send(["Server error get"]);
+      res.send(["Server error POST"]);
     }
   });
 
-  app.use("/users", userRouter);
+  app.use("/user", userRouter);
 };
 
 async function validateUsernameEmail(username, email) {
-  return "";
+  const errors = [];
+
+  if (!username || !validate.isLength(username, { min: 5, max: 30 })) {
+    errors.push({
+      property: "username",
+      value: "Username must be between 5 and 30 characters",
+    });
+  }
+
+  if (!email || !validate.isEmail(email)) {
+    errors.push({ property: "email", value: "Invalid email address" });
+  }
+
+  // validate its uniqueness
+  const usersWithUsername = await db.users.findAll({
+    where: { username: username },
+  });
+  if (usersWithUsername.length > 0)
+    errors.push({ property: "email", value: "Username exists" });
+
+  const usersWithEmail = await db.users.findAll({
+    where: { email: email },
+  });
+  if (usersWithEmail.length > 0)
+    errors.push({ property: "email", value: "Email exists" });
+
+  console.log(errors);
+  return errors;
 }
 
 function validatePassword(password) {

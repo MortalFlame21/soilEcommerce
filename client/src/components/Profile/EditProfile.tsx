@@ -120,7 +120,7 @@ function EditProfile() {
   return (
     <>
       <h3>My profile</h3>
-      <p>You joined: {user?.dateJoined.toLocaleString().slice(0, -14)}</p>
+      <p>You joined: {user?.date_joined.toLocaleString().slice(0, -14)}</p>
       <hr />
       <Form onSubmit={handleSubmit} className="mb-5">
         <Form.Group className="mb-3">
