@@ -19,6 +19,17 @@ exports.one = async (req, res) => {
   res.json(product);
 };
 
+// Select product image by id
+exports.image = async (req, res) => {
+  const product = await db.product.findByPk(req.params.id);
+
+  if (product) {
+    res.send(product.image);
+  } else {
+    res.status(404).send('Product not found');
+  }
+};
+
 // Create a product in the database.
 exports.create = async (req, res) => {
   const product = await db.product.create({

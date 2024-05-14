@@ -11,6 +11,9 @@ module.exports = (express, app) => {
   // Select a single product by id.
   router.get("/:id", controller.one);
 
+  // Select a product image by id.
+  router.get("/:id/image", controller.image);
+
   // Add routes to server.
   app.use("/products", router);
 };

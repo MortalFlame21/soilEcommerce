@@ -5,15 +5,21 @@ import { Button, Card, Col } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import { toast } from "react-toastify";
 
-import { allProducts, ProductType } from "../service/product";
+import { allProducts, ProductType, productImageByID } from "../service/product";
 
 function ProductCards() {
   const { updateItem, getProductInCart } = CartConsumer();
   const [data, setData] = useState<ProductType[] | null>(null);
 
   useEffect(() => {
-    allProducts().then((value) => {
-      setData(value);
+    allProducts().then(async (products) => {
+      const productsWithImages = await Promise.all(
+        products.map(async (product: ProductType, index: number) => {
+          const base64image = await productImageByID(index + 1);
+          return { ...product, image: base64image };
+        })
+      );
+      setData(productsWithImages);
     });
   }, []);
 
@@ -26,9 +32,6 @@ function ProductCards() {
 
   for (let i = 0; i < numberOfProducts; i++) {
     const productInCart = getProductInCart(data[i]);
-    const base64image = data[i].image;
-
-    console.log(base64image);
 
     products.push(
       <Col
@@ -75,7 +78,7 @@ function ProductCards() {
                   className="rounded-2 overflow-hidden"
                 >
                   <img
-                    src={`data:image/jpg;base64,${base64image}`}
+                    src={`data:image/jpg;base64,${data[i].image}`}
                     className="mx-auto d-block rounded-2"
                     style={{ width: "100%", height: "auto" }}
                   />
