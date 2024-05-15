@@ -1,48 +1,28 @@
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Image,
-  Form,
-  InputGroup,
-} from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
+import { Container, Row, Col, Image, Form, InputGroup } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { getProduct } from "../utils/product";
-import { CartConsumer } from "../components/CartContext";
+//import { toast } from "react-toastify";
+import { findProductByID, ProductType } from "../service/product";
 
 function ProductDetails() {
-  const product = getProduct(Number(useParams().id || "0") || 0); // if NaN then it defaults to 0
-
-  const { updateItem, getProductInCart } = CartConsumer();
-  const productInCart = getProductInCart(product);
-  const [quantity, setQuantity] = useState(productInCart?.quantity || 1);
-  const prevQuantity = useRef(quantity);
+  const productID = Number(useParams().id);
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setQuantity(() => productInCart?.quantity || 1);
-  }, [productInCart]);
+    setIsLoading(true);
+    findProductByID(productID).then((res) => {
+      setProduct(res);
+      setIsLoading(false);
+    });
+  }, [productID]);
+
+  if (isLoading) {
+    return <div></div>;
+  }
 
   if (!product) return <Navigate to="/404" replace />;
   document.title = "SOIL | Product";
-
-  const changeQuantity = (q: number) => {
-    prevQuantity.current = quantity;
-    // refactor: make this better ;-;
-    if (isNaN(q)) q = prevQuantity.current;
-    else if (q <= 0) q = 1;
-    else if (q >= 50) q = 50;
-    setQuantity(q);
-    if (productInCart) updateItem(product, q); // only update if in cart
-  };
-
-  const removeProductFromCart = () => {
-    if (productInCart && updateItem(product, 0))
-      toast.info(`Removed ${product.name.toLowerCase()} from cart`);
-    setQuantity(1);
-  };
 
   return (
     <Container fluid className="col-lg-8 mb-5">
@@ -101,22 +81,22 @@ function ProductDetails() {
             <InputGroup className="w-25">
               <InputGroup.Text
                 onClick={() => {
-                  changeQuantity(quantity - 1);
+                  null;
                 }}
               >
                 -
               </InputGroup.Text>
               <Form.Control
                 name="number"
-                value={quantity}
+                value={0}
                 className="text-center"
                 onChange={(e) => {
-                  changeQuantity(Number(e.target.value));
+                  e;
                 }}
               />
               <InputGroup.Text
                 onClick={() => {
-                  changeQuantity(quantity + 1);
+                  null;
                 }}
               >
                 +
@@ -126,7 +106,7 @@ function ProductDetails() {
             {/* TODO: REMOVE LATER */}
             {/* <p>{productInCart?.quantity}</p> */}
 
-            {!productInCart && (
+            {/* {!productInCart && (
               <Button
                 variant="success"
                 onClick={() => {
@@ -139,9 +119,9 @@ function ProductDetails() {
               >
                 Add to cart
               </Button>
-            )}
+            )} */}
 
-            {productInCart && (
+            {/* {productInCart && (
               <Button
                 variant="danger"
                 onClick={() => {
@@ -150,7 +130,7 @@ function ProductDetails() {
               >
                 Remove
               </Button>
-            )}
+            )} */}
           </div>
         </Col>
       </Row>
