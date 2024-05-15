@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Button, Card, Col } from "react-bootstrap";
+import { Button, Card, Col, Spinner } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import { toast } from "react-toastify";
 
@@ -17,7 +17,13 @@ function ProductCards() {
   }, []);
 
   if (data === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   const numberOfProducts = data.length;

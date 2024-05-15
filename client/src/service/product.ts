@@ -15,9 +15,9 @@ export type ProductType = {
 export async function findProductByID(id: number) {
   try {
     const res = await axios.get(`${config.HOST}/products/${id}`);
-    return res.data.length > 0;
+    return res.data;
   } catch {
-    return false;
+    return [];
   }
 }
 
