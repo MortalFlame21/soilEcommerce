@@ -29,17 +29,24 @@ function validateUsernameEmail(username, email) {
   return errors;
 }
 
-async function uniqueUsernameEmail(username, email) {
+// extra is the additional conditions for the query
+async function uniqueUsernameEmail(username, email, extra = {}) {
   const errors = [];
 
   const usersWithUsername = await db.users.findAll({
-    where: { username: username },
+    where: {
+      username: username,
+      ...extra,
+    },
   });
   if (usersWithUsername.length > 0)
     errors.push({ property: "username", value: "Username exists" });
 
   const usersWithEmail = await db.users.findAll({
-    where: { email: email },
+    where: {
+      email: email,
+      ...extra,
+    },
   });
   if (usersWithEmail.length > 0)
     errors.push({ property: "email", value: "Email exists" });

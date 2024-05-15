@@ -6,6 +6,7 @@ const {
   uniqueUsernameEmail,
   validateUserID,
 } = require("../utils/users");
+const { Op } = require("sequelize");
 
 module.exports = (express, app) => {
   const userRouter = express.Router();
@@ -83,15 +84,15 @@ module.exports = (express, app) => {
 
       console.log(`${user_id} ${username} ${email} ${password}`);
 
-      const idInvalid = validateUserID(user_id);
+      const idInvalid = await validateUserID(user_id);
       if (idInvalid) {
-        res.status(400).send([idInvalid]);
+        res.send(idInvalid);
+        return;
       }
 
       const passwordInvalid = validatePassword(password);
       if (passwordInvalid) {
-        res.send([passwordInvalid]);
-        next();
+        res.send(passwordInvalid);
         return;
       }
 
@@ -101,10 +102,9 @@ module.exports = (express, app) => {
         return;
       }
 
-      // !!
-      // need to fix this still :(
-      // !!
-      const errors2 = uniqueUsernameEmail(username, email);
+      const errors2 = await uniqueUsernameEmail(username, email, {
+        [Op.not]: [{ user_id: [user_id] }],
+      });
       if (errors2.length > 0) {
         res.send(errors2);
         return;
@@ -117,11 +117,9 @@ module.exports = (express, app) => {
         { where: { user_id: user_id } }
       );
 
-      console.log("pass");
-      res.send("ok good");
-    } catch (e) {
-      console.log("fail");
-      res.status(500).send("Internal Server Error");
+      res.send([]);
+    } catch {
+      res.send(["Internal Server Error"]);
     }
   });
 
