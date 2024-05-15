@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const config = require("./config.js");
-const storeData = require("../../../client/src/data/store.json");
+const storeData = require("./store.json");
 const bcrypt = require("bcryptjs");
 
 const db = {

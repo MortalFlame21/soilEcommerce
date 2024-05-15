@@ -1,4 +1,4 @@
-import store from "../data/store.json";
+//import store from "../data/store.json";
 
 // Everything related to storing and grabbing products
 
@@ -19,7 +19,7 @@ export type ProductList = Product[]; // list of products
 
 // intialises the products for the website
 export function initProducts() {
-  localStorage.setItem(PRODUCT_LIST_KEY, JSON.stringify(store.products));
+  // localStorage.setItem(PRODUCT_LIST_KEY, JSON.stringify(store.products));
 }
 
 export function getProductList(): ProductList {

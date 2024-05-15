@@ -23,16 +23,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import { AuthProvider } from "./components/AuthContext";
 import { UserCartProvider } from "./components/CartContext";
-import { useEffect } from "react";
-import { initProducts } from "./utils/product";
 import Checkout from "./pages/Checkout";
 import ThankYou from "./pages/ThankYou";
 
 function App() {
-  useEffect(() => {
-    initProducts();
-  }, []);
-
   const location = useLocation();
 
   return (
