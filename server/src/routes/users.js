@@ -123,5 +123,22 @@ module.exports = (express, app) => {
     }
   });
 
+  userRouter.delete("/", async (req, res) => {
+    try {
+      const { user_id } = req.body;
+
+      const idInvalid = await validateUserID(user_id);
+      if (idInvalid) {
+        res.send(idInvalid);
+        return;
+      }
+
+      await db.users.destroy({ where: { user_id: user_id } });
+      res.send([]);
+    } catch {
+      res.send(["Internal Server Error"]);
+    }
+  });
+
   app.use("/user", userRouter);
 };
