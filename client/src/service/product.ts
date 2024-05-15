@@ -17,7 +17,7 @@ export async function findProductByID(id: number) {
     const res = await axios.get(`${config.HOST}/products/${id}`);
     return res.data;
   } catch {
-    return false;
+    return [];
   }
 }
 

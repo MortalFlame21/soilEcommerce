@@ -1,4 +1,12 @@
-import { Container, Row, Col, Image, Form, InputGroup } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Image,
+  Form,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 //import { toast } from "react-toastify";
@@ -18,7 +26,13 @@ function ProductDetails() {
   }, [productID]);
 
   if (isLoading) {
-    return <div></div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 
   if (!product) return <Navigate to="/404" replace />;
