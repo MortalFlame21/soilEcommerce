@@ -78,7 +78,7 @@ module.exports = (express, app) => {
     }
   });
 
-  userRouter.put("/", async (req, res) => {
+  userRouter.patch("/", async (req, res) => {
     try {
       const { user_id, username, email, password } = req.body;
 
@@ -133,6 +133,7 @@ module.exports = (express, app) => {
         return;
       }
 
+      // DELETE CART STUFF AND REVIEW STUFF AS WELL!
       await db.users.destroy({ where: { user_id: user_id } });
       res.send([]);
     } catch {

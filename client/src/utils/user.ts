@@ -62,15 +62,19 @@ export function logoutUser(): void {
 }
 
 export function deleteUser(email: string): void {
-  // todo:
-  // delete user diet plan
+  // try {
+  // await remove from db
+  // remove from session storage
+  // redirect
+  // }
+  // catch {
+
+  // }
+
   const users = getUserList();
   delete users[email];
   emptyCart(email);
   localStorage.setItem(USER_LIST_KEY, JSON.stringify(users));
 }
-
-// refactoring
-// use async functions?
 
 // {"t@t.com":{"username":"username","email":"t@t.com","password":"pswdWORK1!"},"t@t.co":{"username":"username","email":"t@t.co","password":"passWORD1!_"},"k@k.k":{"username":"my name is my name","email":"k@k.k","password":"pswdWORK1!"},"test":{"username":"test","email":"test","password":"test"},"lol@lol.com":{"username":"loluser","email":"lol@lol.com","password":"passWORD1!_"}}

@@ -24,7 +24,7 @@ function useForm(
     if (isSubmitted && Object.keys(errors).length === 0) success();
   }, [errors]);
 
-  const handleChangeValues = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeValues = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setValues((prevValues) => ({
       ...prevValues,
