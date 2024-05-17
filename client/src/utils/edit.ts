@@ -60,6 +60,10 @@ function validateEdit(v: Record<string, string>, u: User | undefined) {
 
   if (validateUsername(v, u)) errors.username = validateUsername(v, u);
   if (validateEmail(v, u)) errors.email = validateEmail(v, u);
+
+  // fix below
+  // validate new password and confirm
+  // validate the old password
   if (validatePassword(v, u)) errors.password = validatePassword(v, u);
   if (validateConfirmPassword(v, u))
     errors.cPassword = validateConfirmPassword(v, u);
@@ -70,7 +74,7 @@ function validateEdit(v: Record<string, string>, u: User | undefined) {
 function checkIfEdited(v: Record<string, string>, u: User | undefined) {
   if (v.username != u?.username) return true;
   if (v.email != u?.email) return true;
-  if (v.password != u?.password) return true;
+  if (v.newPassword) return true;
   return false;
 }
 

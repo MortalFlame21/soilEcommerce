@@ -8,15 +8,9 @@ import {
 import useForm from "../../utils/useForm";
 
 import { AuthConsumer } from "../AuthContext";
-import { useRef, useState } from "react";
-import {
-  editExistingUser,
-  validateEdit,
-  checkIfEdited,
-} from "../../utils/edit";
+import { useReducer, useRef, useState } from "react";
+import { validateEdit, checkIfEdited } from "../../utils/edit";
 import { toast } from "react-toastify";
-
-type EditInputs = "username" | "email" | "password" | "hash";
 
 const info = (
   <svg
@@ -32,34 +26,69 @@ const info = (
   </svg>
 );
 
+type EditDisableStates = {
+  username: boolean;
+  email: boolean;
+  newPassword: boolean;
+  confirmNewPassword: boolean;
+  oldPassword: boolean;
+};
+
+type EditInputs = keyof EditDisableStates;
+
+type InputAction = {
+  action: "EDIT" | "RESET" | "CANCEL" | "";
+  key: EditInputs;
+};
+
+function disableReducer(state: EditDisableStates, action: InputAction) {
+  switch (action.action) {
+    case "CANCEL":
+    case "EDIT":
+      return {
+        ...state,
+        [action.key]: !state[action.key],
+      };
+    case "RESET":
+      return {
+        ...state,
+        [action.key]: true,
+      };
+    default:
+      return {
+        ...state,
+      };
+  }
+}
+
 function EditProfile() {
-  const [isDisable, setIsDisable] = useState<Record<string, boolean>>({
+  const [isDisable, dispatch] = useReducer(disableReducer, {
     username: true,
     email: true,
-    password: true,
+    newPassword: true,
+    confirmNewPassword: true,
+    oldPassword: true,
   });
   const [isEdited, setIsEdited] = useState(false);
-  const { user, login } = AuthConsumer();
   const prevValues = useRef<Record<string, string>>({});
+  const { user, login } = AuthConsumer();
 
-  const [isShow, setisShow] = useState<Record<string, boolean>>({
-    password: false,
-    cpassword: false,
-  });
+  const { values, errors, handleSubmit, handleChangeValues } = useForm(
+    () => {
+      // login(values.email); // login with
 
-  // if values is not there and it is not an empty string it falls back to user input
-  const setInputValue = (i: EditInputs) => {
-    if (i !== "password")
-      values[i] = values[i] || values[i] == "" ? values[i] : user![i];
-    else values[i] = values[i] || values[i] == "" ? values[i] : "";
-    return values[i];
-  };
+      toast.info("Successfully edited profile");
+      setIsEdited(false);
+    },
+    async () => {
+      return validateEdit(values, user);
+    }
+  );
 
-  const setDisableInput = (i: string) => {
-    // Check if an input field is opened !isDisabled[input] and trying to edit another one input != i
+  const handleEdit = (key: EditInputs) => {
     let editAnotherInput = false;
     Object.keys(isDisable).forEach((input) => {
-      if (!isDisable[input] && input != i) {
+      if (!isDisable[input as keyof typeof isDisable] && input != key) {
         editAnotherInput = true;
         errors[input] = `Save ${input} first!`;
       }
@@ -67,55 +96,51 @@ function EditProfile() {
 
     // user tried to edit another input
     if (editAnotherInput) {
-      setIsDisable({ ...isDisable, [i]: !!isDisable[i] }); // force a rerender to show new error[i]
+      dispatch({ action: "", key });
       return;
     }
 
-    // user finished editing opened input
-    prevValues.current[i] = values[i]; // save old value incase of cancelling
-    if (!isDisable[i]) errors[i] = ""; // remove error msg upon close
-    setIsEdited(checkIfEdited(values, user)); // check whether to edit button
-    setIsDisable({ ...isDisable, [i]: !isDisable[i] }); // closes or upons
+    errors[key] = "";
+    prevValues.current[key] = values[key]; // save old value incase of cancelling
+    dispatch({ action: "EDIT", key });
+    setIsEdited(checkIfEdited(values, user));
   };
 
-  const cancelEditInput = (i: EditInputs) => {
-    if (i !== "password")
-      values[i] = values[i] ? prevValues.current[i] : user![i];
+  const handleCancel = (key: EditInputs) => {
+    if (key == "username" || key == "email")
+      values[key] = values[key] ? prevValues.current[key] : user![key];
     // reset back to og user values or prev value edited
-    else values[i] = values[i] || values[i] == "" ? values[i] : "";
-    setDisableInput(i); // close the input
+    else values[key] = values[key] || values[key] == "" ? values[key] : "";
+    errors[key] = "";
+    dispatch({ action: "CANCEL", key });
   };
 
-  const canResetEditInput = (i: EditInputs) => {
-    if (i !== "password") return isDisable[i] && values[i] != user![i];
-    // is not editing and not same values
-    else return isDisable[i] && values[i];
-  };
-
-  const resetEditInput = (i: EditInputs) => {
-    if (i !== "password") values[i] = user![i]; // reset back
-    else values[i] = "";
-    setIsEdited(checkIfEdited(values, user)); // check whether to edit button
-    setIsDisable({ ...isDisable, [i]: !!isDisable[i] }); // force a rerender removing the cancel button
-  };
-
-  const showPassword = (i: "password" | "cpassword") => {
-    setisShow({ ...isShow, [i]: !isShow[i] });
-  };
-
-  const { values, errors, handleSubmit, handleChangeValues } = useForm(
-    () => {
-      editExistingUser(values);
-      login(values.email); // "login" with new values, changes user state
-      toast.info("Successfully edited profile");
+  const handleReset = (key: EditInputs) => {
+    if (key == "username" || key == "email")
+      values[key] = user![key]; // reset back
+    else if (key == "newPassword") {
+      // just incase if user changes mind on password we don't want to remember these values
       delete values.cPassword;
       delete errors.cPassword;
-      setIsEdited(false);
-    },
-    async () => {
-      return validateEdit(values, user);
-    }
-  );
+    } else values[key] = "";
+
+    values["oldPassword"] = "";
+    dispatch({ action: "RESET", key });
+    setIsEdited(checkIfEdited(values, user));
+  };
+
+  // if values is not there and it is not an empty string it falls back to user input
+  const setInputValue = (i: "username" | "email") => {
+    return (values[i] =
+      values[i] || values[i] == "" ? values[i] : user![i] || "");
+  };
+
+  // is not editing and not same values
+  const canResetEditInput = (i: EditInputs) => {
+    if (i == "username" || i == "email")
+      return isDisable[i] && values[i] != user![i];
+    else return isDisable[i] && values[i];
+  };
 
   return (
     <>
@@ -135,7 +160,7 @@ function EditProfile() {
               disabled={isDisable.username}
             />
             <InputGroup.Text
-              onClick={() => setDisableInput("username")}
+              onClick={() => handleEdit("username")}
               className="user-select-none"
             >
               {isDisable.username ? "Edit" : "Save"}
@@ -143,7 +168,7 @@ function EditProfile() {
 
             {!isDisable.username && (
               <InputGroup.Text
-                onClick={() => cancelEditInput("username")}
+                onClick={() => handleCancel("username")}
                 className="user-select-none"
               >
                 Cancel
@@ -152,7 +177,7 @@ function EditProfile() {
 
             {canResetEditInput("username") && (
               <InputGroup.Text
-                onClick={() => resetEditInput("username")}
+                onClick={() => handleReset("username")}
                 className="user-select-none"
               >
                 Reset
@@ -173,7 +198,7 @@ function EditProfile() {
               disabled={isDisable.email}
             />
             <InputGroup.Text
-              onClick={() => setDisableInput("email")}
+              onClick={() => handleEdit("email")}
               className="user-select-none"
             >
               {isDisable.email ? "Edit" : "Save"}
@@ -181,7 +206,7 @@ function EditProfile() {
 
             {!isDisable.email && (
               <InputGroup.Text
-                onClick={() => cancelEditInput("email")}
+                onClick={() => handleCancel("email")}
                 className="user-select-none"
               >
                 Cancel
@@ -190,7 +215,7 @@ function EditProfile() {
 
             {canResetEditInput("email") && (
               <InputGroup.Text
-                onClick={() => resetEditInput("email")}
+                onClick={() => handleReset("email")}
                 className="user-select-none"
               >
                 Reset
@@ -204,36 +229,34 @@ function EditProfile() {
           <h4>Set new password</h4>
           <InputGroup className="mb-3">
             <Form.Control
-              type={isShow.password ? "text" : "password"}
-              name="password"
+              // type={isShow.password ? "text" : "password"}
+              type="password"
+              name="newPassword"
               onChange={handleChangeValues}
-              value={setInputValue("password")}
+              value={values.newPassword || ""}
               placeholder="Enter new password"
-              disabled={isDisable.password}
+              disabled={isDisable.newPassword}
             />
             <InputGroup.Text
-              onClick={() => setDisableInput("password")}
+              onClick={() => handleEdit("newPassword")}
               className="user-select-none"
             >
-              {isDisable.password ? "Edit" : "Save"}
+              {isDisable.newPassword ? "Edit" : "Save"}
             </InputGroup.Text>
 
-            {!isDisable.password && (
+            {!isDisable.newPassword && (
               <InputGroup.Text
-                onClick={() => cancelEditInput("password")}
+                onClick={() => handleCancel("newPassword")}
                 className="user-select-none"
               >
                 Cancel
               </InputGroup.Text>
             )}
 
-            {canResetEditInput("password") && isDisable.password && (
+            {canResetEditInput("newPassword") && isDisable.newPassword && (
               <InputGroup.Text
                 onClick={() => {
-                  // just incase if user changes mind on password we don't want to remember these values
-                  delete values.cPassword;
-                  delete errors.cPassword;
-                  resetEditInput("password");
+                  handleReset("newPassword");
                 }}
                 className="user-select-none"
               >
@@ -243,7 +266,7 @@ function EditProfile() {
 
             <InputGroup.Text
               onClick={() => {
-                showPassword("password");
+                // showPassword("password");
               }}
               className="user-select-none"
             >
@@ -287,22 +310,23 @@ function EditProfile() {
         </Form.Group>
 
         {/* show if password is not disabled or when we can reset it and when disabled (meaning password is changed) */}
-        {(!isDisable.password ||
-          (canResetEditInput("password") && isDisable.password)) && (
+        {(!isDisable.newPassword ||
+          (canResetEditInput("newPassword") && isDisable.newPassword)) && (
           <Form.Group className="mb-3">
             <Form.Label>Confirm new password</Form.Label>
             <InputGroup className="mb-3">
               <Form.Control
-                type={isShow.cpassword ? "text" : "password"}
+                // type={isShow.cpassword ? "text" : "password"}
+                type="password"
                 name="cPassword"
                 onChange={handleChangeValues}
                 value={values.cPassword || ""}
                 placeholder="Confirm new password"
-                disabled={isDisable.password}
+                disabled={isDisable.newPassword}
               />
               <InputGroup.Text
                 onClick={() => {
-                  showPassword("cpassword");
+                  // showPassword("cpassword");
                 }}
                 className="user-select-none"
               >
@@ -316,9 +340,21 @@ function EditProfile() {
         )}
 
         {isEdited && (
-          <Button variant="primary" type="submit">
-            Edit Profile
-          </Button>
+          <>
+            <h4>Confirm old password</h4>
+            <Form.Control
+              type={"password"}
+              name="oldPassword"
+              className="mb-3"
+              onChange={handleChangeValues}
+              value={values.oldPassword || ""}
+              placeholder="Confirm current password"
+            />
+
+            <Button variant="primary" type="submit">
+              Edit Profile
+            </Button>
+          </>
         )}
       </Form>
     </>
