@@ -11,6 +11,7 @@ import { AuthConsumer } from "../AuthContext";
 import { useReducer, useRef, useState } from "react";
 import { validateEdit, checkIfEdited } from "../../utils/edit";
 import { toast } from "react-toastify";
+import { updateUserDetails } from "../../service/user";
 
 const info = (
   <svg
@@ -78,8 +79,12 @@ function EditProfile() {
   const { user, login } = AuthConsumer();
 
   const { values, errors, handleSubmit, handleChangeValues } = useForm(
-    () => {
-      // login(values.email); // login with
+    async () => {
+      if (await updateUserDetails(user!.user_id, values)) {
+        toast.warning("Internal server error");
+        return;
+      }
+      login(values.email); // login with possibly new email
 
       handleReset("newPassword");
       handleReset("oldPassword");

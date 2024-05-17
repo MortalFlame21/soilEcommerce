@@ -1,16 +1,5 @@
 import { compareUserPassword } from "../service/user";
-import { User, addUser, userExists, deleteUser } from "./user";
-
-// success
-function editExistingUser(v: Record<string, string>) {
-  deleteUser(v.email); // temp delete user, definetely change this when using db
-  //   addUser({
-  //     username: v.username,
-  //     email: v.email,
-  //     password: v.password,
-  //     date: new Date(v.date),
-  //   });
-}
+import { User, userExists } from "./user";
 
 function validateUsername(v: Record<string, string>, u: User) {
   // no changes don't bother, might be a problem l8r on idk
@@ -92,4 +81,4 @@ function checkIfEdited(v: Record<string, string>, u: User | undefined) {
   return false;
 }
 
-export { editExistingUser, validateEdit, checkIfEdited };
+export { validateEdit, checkIfEdited };

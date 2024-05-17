@@ -55,3 +55,20 @@ export async function compareUserPassword(user_id: number, password: string) {
     return false;
   }
 }
+
+export async function updateUserDetails(
+  user_id: number,
+  v: Record<string, string>
+) {
+  try {
+    const res = await axios.patch(`${config.HOST}/user/`, {
+      user_id: user_id,
+      username: v.username,
+      email: v.email,
+      password: v.newPassword || v.oldPassword,
+    });
+    return res.data.length > 0;
+  } catch {
+    return false;
+  }
+}

@@ -118,13 +118,13 @@ module.exports = (express, app) => {
 
       const idInvalid = await validateUserID(user_id);
       if (idInvalid) {
-        res.send(idInvalid);
+        res.send([idInvalid]);
         return;
       }
 
       const passwordInvalid = validatePassword(password);
       if (passwordInvalid) {
-        res.send(passwordInvalid);
+        res.send([passwordInvalid]);
         return;
       }
 
