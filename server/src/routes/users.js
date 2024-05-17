@@ -63,8 +63,9 @@ module.exports = (express, app) => {
       });
 
       const isSame = await bcrypt.compare(password, user.at(0).hash);
+      const error = isSame ? "" : "Password does not match!";
 
-      res.send({ error: "", compare: isSame });
+      res.send({ error: error, compare: isSame });
     } catch (e) {
       console.log(e);
       res.send({ error: "Something went wrong", compare: false });

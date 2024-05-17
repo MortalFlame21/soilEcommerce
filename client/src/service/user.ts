@@ -47,7 +47,6 @@ export async function getRegisteredUser(
 
 export async function compareUserPassword(user_id: number, password: string) {
   try {
-    console.log(user_id, password);
     const res = await axios.get(
       `${config.HOST}/user/compare/${user_id}/${password}`
     );

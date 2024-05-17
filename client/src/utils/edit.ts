@@ -1,14 +1,15 @@
+import { compareUserPassword } from "../service/user";
 import { User, addUser, userExists, deleteUser } from "./user";
 
 // success
 function editExistingUser(v: Record<string, string>) {
   deleteUser(v.email); // temp delete user, definetely change this when using db
-  addUser({
-    username: v.username,
-    email: v.email,
-    password: v.password,
-    date: new Date(v.date),
-  });
+  //   addUser({
+  //     username: v.username,
+  //     email: v.email,
+  //     password: v.password,
+  //     date: new Date(v.date),
+  //   });
 }
 
 function validateUsername(v: Record<string, string>, u: User) {
@@ -19,6 +20,7 @@ function validateUsername(v: Record<string, string>, u: User) {
     return "Username must be \u2265 5 characters in length";
   return "";
 }
+
 function validateEmail(v: Record<string, string>, u: User) {
   if (v.email == u.email) return "";
   else if (!v.email) return "Enter a email!";
@@ -28,31 +30,38 @@ function validateEmail(v: Record<string, string>, u: User) {
   return "";
 }
 
-function validatePassword(v: Record<string, string>, u: User) {
+async function validateOldPassword(
+  user_id: number,
+  password: string | undefined
+) {
+  if (!password) return "Confirm your current password!";
+  const isSame = await compareUserPassword(user_id, password);
+
+  if (!isSame) return "Password does not match!";
+  return "";
+}
+
+function validateNewPassword(v: Record<string, string>) {
   const exp = new RegExp(
     "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#$%^&*()_+-={};':,.<>?/|\\\"])"
   );
 
-  if (v.password == u.password) return "";
-  else if (!v.password) return "Enter a password!";
-  else if (v.password.length < 10)
+  if (v.confirmNewPassword && !v.newPassword) return "Enter a password!";
+  else if (v.newPassword && v.newPassword.length < 10)
     return "Password must be \u2265 10 characters in length";
-  else if (!exp.test(v.password)) return "!"; // output jsx
+  else if (v.newPassword && !exp.test(v.newPassword)) return "!"; // output jsx
 
   return "";
 }
 
-function validateConfirmPassword(v: Record<string, string>, u: User) {
-  const hasChangedPswd = v.password != u.password;
-
-  if (!hasChangedPswd) return "";
-  else if (!v.cPassword && hasChangedPswd) return "Confirm your password!";
-  else if (v.password !== v.cPassword && hasChangedPswd)
+function validateConfirmPassword(v: Record<string, string>) {
+  if (v.newPassword && !v.confirmNewPassword) return "Confirm your password!";
+  else if (v.newPassword && v.newPassword !== v.confirmNewPassword)
     return "Passwords must be the same!";
   return "";
 }
 
-function validateEdit(v: Record<string, string>, u: User | undefined) {
+async function validateEdit(v: Record<string, string>, u: User | undefined) {
   const errors: Record<string, string> = {};
 
   if (u === undefined)
@@ -61,12 +70,17 @@ function validateEdit(v: Record<string, string>, u: User | undefined) {
   if (validateUsername(v, u)) errors.username = validateUsername(v, u);
   if (validateEmail(v, u)) errors.email = validateEmail(v, u);
 
-  // fix below
+  // validate the old
+  const comparePasswordInvalid = await validateOldPassword(
+    u.user_id,
+    v.oldPassword
+  );
+  if (comparePasswordInvalid) errors.oldPassword = comparePasswordInvalid;
+
   // validate new password and confirm
-  // validate the old password
-  if (validatePassword(v, u)) errors.password = validatePassword(v, u);
-  if (validateConfirmPassword(v, u))
-    errors.cPassword = validateConfirmPassword(v, u);
+  if (validateNewPassword(v)) errors.newPassword = validateNewPassword(v);
+  if (validateConfirmPassword(v))
+    errors.confirmNewPassword = validateConfirmPassword(v);
 
   return errors;
 }

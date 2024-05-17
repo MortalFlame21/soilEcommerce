@@ -69,6 +69,10 @@ function EditProfile() {
     confirmNewPassword: true,
     oldPassword: true,
   });
+  const [isShow, setIsShow] = useState({
+    newPassword: false,
+    confirmNewPassword: false,
+  });
   const [isEdited, setIsEdited] = useState(false);
   const prevValues = useRef<Record<string, string>>({});
   const { user, login } = AuthConsumer();
@@ -77,11 +81,14 @@ function EditProfile() {
     () => {
       // login(values.email); // login with
 
+      handleReset("newPassword");
+      handleReset("oldPassword");
+
       toast.info("Successfully edited profile");
       setIsEdited(false);
     },
     async () => {
-      return validateEdit(values, user);
+      return await validateEdit(values, user);
     }
   );
 
@@ -120,11 +127,14 @@ function EditProfile() {
       values[key] = user![key]; // reset back
     else if (key == "newPassword") {
       // just incase if user changes mind on password we don't want to remember these values
-      delete values.cPassword;
-      delete errors.cPassword;
+      delete values.newPassword;
+      delete errors.newPassword;
+      delete values.confirmNewPassword;
+      delete errors.confirmNewPassword;
     } else values[key] = "";
 
-    values["oldPassword"] = "";
+    delete values.oldPassword;
+    delete errors.oldPassword;
     dispatch({ action: "RESET", key });
     setIsEdited(checkIfEdited(values, user));
   };
@@ -140,6 +150,10 @@ function EditProfile() {
     if (i == "username" || i == "email")
       return isDisable[i] && values[i] != user![i];
     else return isDisable[i] && values[i];
+  };
+
+  const showPassword = (show: "newPassword" | "confirmNewPassword") => {
+    setIsShow({ ...isShow, [show]: !isShow[show] });
   };
 
   return (
@@ -229,8 +243,7 @@ function EditProfile() {
           <h4>Set new password</h4>
           <InputGroup className="mb-3">
             <Form.Control
-              // type={isShow.password ? "text" : "password"}
-              type="password"
+              type={isShow.newPassword ? "text" : "password"}
               name="newPassword"
               onChange={handleChangeValues}
               value={values.newPassword || ""}
@@ -266,14 +279,14 @@ function EditProfile() {
 
             <InputGroup.Text
               onClick={() => {
-                // showPassword("password");
+                showPassword("newPassword");
               }}
               className="user-select-none"
             >
               View password
             </InputGroup.Text>
           </InputGroup>
-          {errors.password === "!" ? (
+          {errors.newPassword === "!" ? (
             <OverlayTrigger
               delay={{ show: 150, hide: 150 }}
               placement="right"
@@ -304,7 +317,7 @@ function EditProfile() {
             </OverlayTrigger>
           ) : (
             <Form.Text className="text-danger">
-              {errors.password || ""}
+              {errors.newPassword || ""}
             </Form.Text>
           )}
         </Form.Group>
@@ -316,17 +329,16 @@ function EditProfile() {
             <Form.Label>Confirm new password</Form.Label>
             <InputGroup className="mb-3">
               <Form.Control
-                // type={isShow.cpassword ? "text" : "password"}
-                type="password"
-                name="cPassword"
+                type={isShow.confirmNewPassword ? "text" : "password"}
+                name="confirmNewPassword"
                 onChange={handleChangeValues}
-                value={values.cPassword || ""}
+                value={values.confirmNewPassword || ""}
                 placeholder="Confirm new password"
                 disabled={isDisable.newPassword}
               />
               <InputGroup.Text
                 onClick={() => {
-                  // showPassword("cpassword");
+                  showPassword("confirmNewPassword");
                 }}
                 className="user-select-none"
               >
@@ -334,22 +346,27 @@ function EditProfile() {
               </InputGroup.Text>
             </InputGroup>
             <Form.Text className="text-danger">
-              {errors.cPassword || ""}
+              {errors.confirmNewPassword || ""}
             </Form.Text>
           </Form.Group>
         )}
 
         {isEdited && (
           <>
-            <h4>Confirm old password</h4>
-            <Form.Control
-              type={"password"}
-              name="oldPassword"
-              className="mb-3"
-              onChange={handleChangeValues}
-              value={values.oldPassword || ""}
-              placeholder="Confirm current password"
-            />
+            <Form.Group className="mb-3">
+              <h4>Confirm old password</h4>
+              <Form.Control
+                type="password"
+                name="oldPassword"
+                className="mb-3"
+                onChange={handleChangeValues}
+                value={values.oldPassword || ""}
+                placeholder="Confirm current password"
+              />
+              <Form.Text className="text-danger">
+                {errors.oldPassword || ""}
+              </Form.Text>
+            </Form.Group>
 
             <Button variant="primary" type="submit">
               Edit Profile
