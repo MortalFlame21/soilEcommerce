@@ -40,6 +40,37 @@ module.exports = (express, app) => {
     }
   });
 
+  // compare user password
+  userRouter.get("/compare/:user_id/:password", async (req, res) => {
+    try {
+      const { user_id, password } = req.params;
+
+      if (!password) {
+        res.send({ error: "Password is empty!", compare: false });
+        return;
+      }
+
+      const idInvalid = await validateUserID(user_id);
+      if (idInvalid) {
+        res.send({ error: idInvalid, compare: false });
+        return;
+      }
+
+      const user = await db.users.findAll({
+        where: {
+          user_id: user_id,
+        },
+      });
+
+      const isSame = await bcrypt.compare(password, user.at(0).hash);
+
+      res.send({ error: "", compare: isSame });
+    } catch (e) {
+      console.log(e);
+      res.send({ error: "Something went wrong", compare: false });
+    }
+  });
+
   // user creation
   userRouter.post("/", async (req, res) => {
     try {

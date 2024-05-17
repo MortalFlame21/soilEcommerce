@@ -6,7 +6,7 @@ const USER_LIST_KEY = "__USERS";
 const USER_KEY = "__USER";
 
 export type User = {
-  id: number;
+  user_id: number;
   username: string;
   email: string;
   hash: string;

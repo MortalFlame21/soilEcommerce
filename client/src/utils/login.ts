@@ -1,5 +1,4 @@
-import { getRegisteredUser } from "../service/user";
-import bcrypt from "bcryptjs";
+import { compareUserPassword, getRegisteredUser } from "../service/user";
 
 async function validateLoginIn(v: Record<string, string>) {
   const errors: Record<string, string> = {};
@@ -17,21 +16,11 @@ async function validateLoginIn(v: Record<string, string>) {
   // else errors.email = "pass?";
 
   if (!v.password) errors.password = "Enter a password!";
-  else if (user && (await checkUserPassword(v!.password, user?.hash)))
+  else if (user && !(await compareUserPassword(user.user_id, v!.password)))
     errors.password = "Password is incorrect!";
   // else errors.password = "pass?";
 
   return errors;
-}
-
-async function checkUserPassword(password: string, hash: string) {
-  try {
-    const valid = await bcrypt.compare(password, hash);
-    if (!valid) return "fail";
-    return "";
-  } catch {
-    return "fail";
-  }
 }
 
 export { validateLoginIn };

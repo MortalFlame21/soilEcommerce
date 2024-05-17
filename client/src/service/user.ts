@@ -44,3 +44,15 @@ export async function getRegisteredUser(
     return undefined;
   }
 }
+
+export async function compareUserPassword(user_id: number, password: string) {
+  try {
+    console.log(user_id, password);
+    const res = await axios.get(
+      `${config.HOST}/user/compare/${user_id}/${password}`
+    );
+    return res.data.compare;
+  } catch {
+    return false;
+  }
+}
