@@ -13,12 +13,20 @@ db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   dialect: config.DIALECT,
 });
 
-// models
+// init models
 db.users = require("./models/user.js")(db.sequelize, DataTypes);
 db.product = require("./models/product.js")(db.sequelize, DataTypes);
+db.cart = require("./models/cart.js")(db.sequelize, DataTypes);
+db.cart_products = require("./models/cart_products.js")(
+  db.sequelize,
+  DataTypes
+);
 
-// Relate post and user.
-//db.post.belongsTo(db.user, { foreignKey: { name: "username", allowNull: false } });
+// set up the relationships
+// db.users.hasOne(db.cart);
+// db.cart.belongsTo(db.users, {
+//   foreignKey: { name: "user_id" },
+// });
 
 db.sync = async () => {
   // Sync schema
@@ -70,6 +78,7 @@ async function seedUsers() {
       user.hash = await bcrypt.hash(user.hash, 1); // 1 salt round
       await db.users.create(user);
     } catch (e) {
+      console.log(e);
       console.log("User exists skip");
     }
   });
