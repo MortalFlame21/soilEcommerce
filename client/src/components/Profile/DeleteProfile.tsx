@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AuthConsumer } from "../AuthContext";
-import { deleteUser } from "../../utils/user";
+import { deleteUserOLD } from "../../utils/user";
+import { deleteUser } from "../../service/user";
 
 function DeleteProfile() {
   const { user, logout } = AuthConsumer();
@@ -12,13 +13,20 @@ function DeleteProfile() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     handleClose();
-    deleteUser(user!.email);
-    toast.warning("Account deleted!", {
-      position: "top-center",
-    });
-    logout();
+
+    if (await deleteUser(user!.user_id)) {
+      // remove this function below l8r
+      deleteUserOLD(user!.email);
+
+      toast.warning("Account deleted!", {
+        position: "top-center",
+      });
+      logout();
+    } else {
+      toast.warning("Internal server error!");
+    }
   };
 
   return (

@@ -61,16 +61,7 @@ export function logoutUser(): void {
   sessionStorage.removeItem(USER_KEY);
 }
 
-export function deleteUser(email: string): void {
-  // try {
-  // await remove from db
-  // remove from session storage
-  // redirect
-  // }
-  // catch {
-
-  // }
-
+export function deleteUserOLD(email: string): void {
   const users = getUserList();
   delete users[email];
   emptyCart(email);

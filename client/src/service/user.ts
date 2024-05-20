@@ -72,3 +72,12 @@ export async function updateUserDetails(
     return false;
   }
 }
+
+export async function deleteUser(user_id: number) {
+  try {
+    const res = await axios.delete(`${config.HOST}/user/${user_id}`);
+    return res.data.length == 0; // meaning no errors, [] return
+  } catch {
+    return false;
+  }
+}

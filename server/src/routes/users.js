@@ -114,8 +114,6 @@ module.exports = (express, app) => {
     try {
       const { user_id, username, email, password } = req.body;
 
-      console.log(`${user_id} ${username} ${email} ${password}`);
-
       const idInvalid = await validateUserID(user_id);
       if (idInvalid) {
         res.send([idInvalid]);
@@ -155,13 +153,13 @@ module.exports = (express, app) => {
     }
   });
 
-  userRouter.delete("/", async (req, res) => {
+  userRouter.delete("/:user_id", async (req, res) => {
     try {
-      const { user_id } = req.body;
+      const { user_id } = req.params;
 
       const idInvalid = await validateUserID(user_id);
       if (idInvalid) {
-        res.send(idInvalid);
+        res.send([idInvalid]);
         return;
       }
 
