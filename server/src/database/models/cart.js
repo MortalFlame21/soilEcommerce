@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       // Added the foreign key explicitly:
       user_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'users', // Reference the 'users' table
           key: 'user_id'  // Reference the 'user_id' column

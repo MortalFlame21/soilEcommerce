@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 // routes
 require("./src/routes/users.js")(express, app);
 require("./src/routes/product.routes.js")(express, app);
+require("./src/routes/cart.routes.js")(express, app);
 
 const PORT = 4000;
 app.listen(PORT, () => {
