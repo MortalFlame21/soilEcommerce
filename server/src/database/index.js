@@ -23,10 +23,19 @@ db.cart_products = require("./models/cart_products.js")(
 );
 
 // set up the relationships
-// db.users.hasOne(db.cart);
-// db.cart.belongsTo(db.users, {
-//   foreignKey: { name: "user_id" },
-// });
+db.product.belongsToMany(db.cart, {
+  through: db.cart_products,
+  foreignKey: "product_id",
+});
+
+db.users.hasOne(db.cart, { foreignKey: 'user_id' });
+
+db.cart.belongsTo(db.users, { foreignKey: 'user_id' });
+db.cart.belongsToMany(db.product, {
+  through: db.cart_products,
+  foreignKey: "cart_id",
+});
+
 
 db.sync = async () => {
   // Sync schema

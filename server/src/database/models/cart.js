@@ -5,13 +5,17 @@ module.exports = (sequelize, DataTypes) => {
       cart_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true, // ???????
+        autoIncrement: true,
       },
-      // fk
+      // Added the foreign key explicitly:
       user_id: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
+        references: {
+          model: 'users', // Reference the 'users' table
+          key: 'user_id'  // Reference the 'user_id' column
+        }
+      }
     },
     {
       timestamps: false,

@@ -5,11 +5,6 @@ module.exports = (sequelize, DataTypes) => {
       // cart_id and product_id can be composite key
       cart_id: {
         // fk
-        type: DataTypes.STRING(255),
-        allowNull: false,
-      },
-      product_id: {
-        // fk
         type: DataTypes.INTEGER,
         allowNull: false,
       },
