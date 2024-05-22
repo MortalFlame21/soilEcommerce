@@ -1,12 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./src/database");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+
+
 
 db.sync({ logging: console.log });
 

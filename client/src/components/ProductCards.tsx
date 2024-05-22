@@ -1,13 +1,21 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Spinner } from "react-bootstrap";
-import { CartConsumer } from "./CartContext";
-import { toast } from "react-toastify";
-
+//import { toast } from "react-toastify";
 import { allProducts, ProductType } from "../service/product";
+import { createOrFindCart } from "../service/cart";
 
 function ProductCards() {
-  const { updateItem, getProductInCart } = CartConsumer();
+  // Create or find cart
+  const [cartId, setCartId] = useState(null);
+
+  const handleButtonClick = async () => {
+    const id = await createOrFindCart();
+    setCartId(id);
+    console.log("Cart ID:", cartId);
+  };
+
+  // getting the prodcuts from the server
   const [data, setData] = useState<ProductType[] | null>(null);
 
   useEffect(() => {
@@ -30,8 +38,6 @@ function ProductCards() {
   const products = [];
 
   for (let i = 0; i < numberOfProducts; i++) {
-    const productInCart = getProductInCart(data[i]);
-
     products.push(
       <Col
         key={i}
@@ -104,11 +110,7 @@ function ProductCards() {
                 minWidth: "70%",
               }}
               onClick={() => {
-                if (updateItem(data[i], (productInCart?.quantity ?? 0) + 1))
-                  toast.success(
-                    `Added ${data[i].name[i].toLowerCase()} to cart`
-                  );
-                else toast.warning("Login to add items to cart.");
+                handleButtonClick();
               }}
             >
               Add to cart
