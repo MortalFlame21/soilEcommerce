@@ -5,10 +5,10 @@ import config from "./config";
 const createOrFindCart = async () => {
   try {
     // Try to get an existing cart
-    const response = await axios.get(`${config.HOST}/carts/`);
-    if (response.data.cartId) {
+    const response = await axios.post(`${config.HOST}/carts/`);
+    if (response.data.cart_id) {
       // If a cart exists, return its ID
-      return response.data.cartId;
+      return response.data.cart_id;
     }
   } catch (error) {
     console.error("Failed to find cart:", error);
