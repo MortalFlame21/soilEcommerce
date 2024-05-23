@@ -2,7 +2,14 @@ import axios from "axios";
 import config from "./config";
 
 // Create or find cart
-const createOrFindCart = async () => {};
+const createOrFindCart = async () => {
+  try {
+    const response = await axios.post(`${config.HOST}/carts`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to create or find cart:", error);
+  }
+};
 
 // Add item to cart
 const addItemToCart = async (
