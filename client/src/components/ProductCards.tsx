@@ -18,7 +18,7 @@ function ProductCards() {
     console.log("Cart ID:" + cartId);
   };
 
-  // getting the prodcuts from the server
+  // getting the product from the server
   const [data, setData] = useState<ProductType[] | null>(null);
 
   useEffect(() => {
