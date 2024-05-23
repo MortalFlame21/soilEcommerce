@@ -4,8 +4,17 @@ import config from "./config";
 // Create or find cart
 const createOrFindCart = async () => {
   try {
-    const response = await axios.post(`${config.HOST}/carts`);
-    return response.data;
+    const cartIdInLocalStorage = localStorage.getItem("cart_id");
+    const response = await axios.post(`${config.HOST}/carts`, {
+      cart_id: cartIdInLocalStorage,
+    });
+    const cartId = response.data.cart_id;
+
+    if (cartIdInLocalStorage !== cartId) {
+      localStorage.setItem("cart_id", cartId);
+    }
+
+    return cartId;
   } catch (error) {
     console.error("Failed to create or find cart:", error);
   }

@@ -6,8 +6,16 @@ import { allProducts, ProductType } from "../service/product";
 import { createOrFindCart } from "../service/cart";
 
 function ProductCards() {
-  const handleButtonClick = async () => {
-    console.log("Cart ID:");
+  // create or find cart
+  const [cartId, setCartId] = useState<number | null>(null);
+  useEffect(() => {
+    createOrFindCart().then((value) => {
+      setCartId(value);
+    });
+  }, []);
+
+  const handleButtonClick = () => {
+    console.log("Cart ID:" + cartId);
   };
 
   // getting the prodcuts from the server
