@@ -6,13 +6,8 @@ import { allProducts, ProductType } from "../service/product";
 import { createOrFindCart } from "../service/cart";
 
 function ProductCards() {
-  // Create or find cart
-  const [cartId, setCartId] = useState(null);
-
   const handleButtonClick = async () => {
-    const id = await createOrFindCart();
-    setCartId(id);
-    console.log("Cart ID:", cartId);
+    console.log("Cart ID:");
   };
 
   // getting the prodcuts from the server
