@@ -1,5 +1,4 @@
 const db = require("../database");
-const { validateUserID, validateCartId } = require("../utils/cart");
 
 const createCart = async (user_id) => {
   try {
@@ -11,17 +10,22 @@ const createCart = async (user_id) => {
   }
 };
 
+async function validateUserID(user_id) {
+  if (!user_id) return ""; // skip anon users can add to cart
+
+  const existingUser = await db.users.findOne({
+    where: { user_id: user_id },
+  });
+  if (!existingUser) return "User not found";
+
+  return "";
+}
+
 exports.createOrFindCart = async (req, res) => {
   try {
     const { cart_id, user_id } = req.body;
 
     // wont bother checking if the user_id maps to the same cart_id
-
-    const cartIdInvalid = await validateCartId(cart_id);
-    if (cartIdInvalid) {
-      res.status(400).json({ error: cartIdInvalid });
-      return;
-    }
 
     const idInvalid = await validateUserID(user_id);
     if (idInvalid) {
