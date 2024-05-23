@@ -30,11 +30,13 @@ exports.createOrFindCart = async (req, res) => {
     }
 
     let cart = null;
-
+    // find an existing cart based on cart_id or user_id
     if (cart_id) cart = await db.cart.findByPk(cart_id);
     else if (user_id)
       cart = await db.cart.findOne({ where: { user_id: user_id } });
-    else if (!cart) cart = await createCart(user_id);
+
+    // if no carts created above, make one
+    if (!cart) cart = await createCart(user_id);
 
     res.json(cart);
   } catch (error) {
