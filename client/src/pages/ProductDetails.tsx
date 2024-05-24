@@ -41,8 +41,6 @@ function ProductDetails() {
         if (value !== null) {
           setProductInCart(value);
           console.log(value);
-        } else {
-          console.error("Failed to check product in cart");
         }
       });
     }
