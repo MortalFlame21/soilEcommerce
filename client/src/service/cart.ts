@@ -65,6 +65,9 @@ const checkProductInCart = async (cart_id: number, product_id: number) => {
     const response = await axios.get(
       `${config.HOST}/carts/items?cart_id=${cart_id}&product_id=${product_id}`
     );
+    if (response.data === null) {
+      return null;
+    }
     return response.data;
   } catch (error) {
     console.error("Failed to check product in cart:", error);

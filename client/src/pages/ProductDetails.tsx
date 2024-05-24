@@ -24,7 +24,7 @@ function ProductDetails() {
 
   const [cartId, setCartId] = useState<number | null>(null);
   const [productInCartData, setProductInCart] = useState<number | null>(null);
-  const [isProductInCart, setIsProductInCart] = useState<boolean>(false);
+
   useEffect(() => {
     createOrFindCart().then((value) => {
       if (value !== null) {
@@ -40,13 +40,13 @@ function ProductDetails() {
       checkProductInCart(cartId, productID).then((value) => {
         if (value !== null) {
           setProductInCart(value);
-          setIsProductInCart(true);
+          console.log(value);
         } else {
           console.error("Failed to check product in cart");
         }
       });
     }
-  }, [productInCartData, cartId, productID]);
+  }, [cartId, productID]);
 
   const [product, setProduct] = useState<ProductType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -136,10 +136,10 @@ function ProductDetails() {
               </InputGroup.Text>
               <Form.Control
                 name="number"
-                value={0}
+                value={1}
                 className="text-center"
                 onChange={(e) => {
-                  e;
+                  console.log(e.target.value);
                 }}
               />
               <InputGroup.Text
@@ -154,7 +154,7 @@ function ProductDetails() {
             {/* TODO: REMOVE LATER */}
             {/* <p>{productInCart?.quantity}</p> */}
 
-            {!isProductInCart && (
+            {productInCartData === null && (
               <Button
                 variant="success"
                 onClick={() => {
@@ -162,8 +162,8 @@ function ProductDetails() {
                     addItemToCart(cartId, product.id, 1)
                       .then((value) => {
                         console.log(value);
+                        setProductInCart(value);
                         toast.success("Item added to cart");
-                        setIsProductInCart(true);
                       })
                       .catch((error) => {
                         console.error(error);
@@ -176,7 +176,7 @@ function ProductDetails() {
               </Button>
             )}
 
-            {isProductInCart && (
+            {productInCartData !== null && (
               <Button
                 variant="danger"
                 onClick={() => {
@@ -184,8 +184,8 @@ function ProductDetails() {
                     deleteItemFromCart(cartId, product.id)
                       .then((value) => {
                         console.log(value);
+                        setProductInCart(null);
                         toast.success("Item removed from cart");
-                        setIsProductInCart(false);
                       })
                       .catch((error) => {
                         console.error(error);
