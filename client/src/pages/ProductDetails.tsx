@@ -6,14 +6,48 @@ import {
   Form,
   InputGroup,
   Spinner,
+  Button,
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-//import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { findProductByID, ProductType } from "../service/product";
+import {
+  createOrFindCart,
+  addItemToCart,
+  checkProductInCart,
+  deleteItemFromCart,
+} from "../service/cart";
 
 function ProductDetails() {
   const productID = Number(useParams().id);
+
+  const [cartId, setCartId] = useState<number | null>(null);
+  const [productInCartData, setProductInCart] = useState<number | null>(null);
+  const [isProductInCart, setIsProductInCart] = useState<boolean>(false);
+  useEffect(() => {
+    createOrFindCart().then((value) => {
+      if (value !== null) {
+        setCartId(value);
+      } else {
+        console.error("Failed to create or find cart");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (cartId !== null) {
+      checkProductInCart(cartId, productID).then((value) => {
+        if (value !== null) {
+          setProductInCart(value);
+          setIsProductInCart(true);
+        } else {
+          console.error("Failed to check product in cart");
+        }
+      });
+    }
+  }, [productInCartData, cartId, productID]);
+
   const [product, setProduct] = useState<ProductType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -120,31 +154,49 @@ function ProductDetails() {
             {/* TODO: REMOVE LATER */}
             {/* <p>{productInCart?.quantity}</p> */}
 
-            {/* {!productInCart && (
+            {!isProductInCart && (
               <Button
                 variant="success"
                 onClick={() => {
-                  if (updateItem(product, quantity))
-                    toast.success(
-                      `Added ${quantity} ${product.name.toLowerCase()} to cart!`
-                    );
-                  else toast.warning("Login to add product!");
+                  if (cartId !== null) {
+                    addItemToCart(cartId, product.id, 1)
+                      .then((value) => {
+                        console.log(value);
+                        toast.success("Item added to cart");
+                        setIsProductInCart(true);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        toast.error("Failed to add item to cart");
+                      });
+                  }
                 }}
               >
                 Add to cart
               </Button>
-            )} */}
+            )}
 
-            {/* {productInCart && (
+            {isProductInCart && (
               <Button
                 variant="danger"
                 onClick={() => {
-                  removeProductFromCart();
+                  if (cartId !== null) {
+                    deleteItemFromCart(cartId, product.id)
+                      .then((value) => {
+                        console.log(value);
+                        toast.success("Item removed from cart");
+                        setIsProductInCart(false);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        toast.error("Failed to remove item from cart");
+                      });
+                  }
                 }}
               >
                 Remove
               </Button>
-            )} */}
+            )}
           </div>
         </Col>
       </Row>

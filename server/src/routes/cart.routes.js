@@ -6,6 +6,10 @@ module.exports = (express, app) => {
     router.post('/', controller.createOrFindCart);
     // Add an item to the cart.
     router.post('/items', controller.addItemToCart);
+    // Remove an item from the cart.
+    router.delete('/items', controller.deleteItemFromCart);
+    //gets the product that is in cart
+    router.get('/items', controller.checkProductInCart);
 
     // Add routes to server.
     app.use("/carts", router);

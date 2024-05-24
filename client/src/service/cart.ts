@@ -41,4 +41,39 @@ const addItemToCart = async (
   }
 };
 
-export { createOrFindCart, addItemToCart };
+//delete item from cart
+const deleteItemFromCart = async (cart_id: number, product_id: number) => {
+  try {
+    if (!cart_id) {
+      throw new Error("Cart ID is undefined");
+    }
+    const response = await axios.delete(
+      `${config.HOST}/carts/items?cart_id=${cart_id}&product_id=${product_id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete item from cart:", error);
+  }
+};
+
+//check if product is in cart
+const checkProductInCart = async (cart_id: number, product_id: number) => {
+  try {
+    if (!cart_id) {
+      throw new Error("Cart ID is undefined");
+    }
+    const response = await axios.get(
+      `${config.HOST}/carts/items?cart_id=${cart_id}&product_id=${product_id}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to check product in cart:", error);
+  }
+};
+
+export {
+  createOrFindCart,
+  addItemToCart,
+  checkProductInCart,
+  deleteItemFromCart,
+};
