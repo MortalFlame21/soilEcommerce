@@ -74,9 +74,31 @@ const checkProductInCart = async (cart_id: number, product_id: number) => {
   }
 };
 
+//update item quantity in cart
+const updateItemQuantityInCart = async (
+  cart_id: number,
+  product_id: number,
+  quantity: number
+) => {
+  try {
+    if (!cart_id) {
+      throw new Error("Cart ID is undefined");
+    }
+    const response = await axios.put(`${config.HOST}/carts/items`, {
+      cart_id,
+      product_id,
+      quantity,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update item quantity in cart:", error);
+  }
+};
+
 export {
   createOrFindCart,
   addItemToCart,
   checkProductInCart,
   deleteItemFromCart,
+  updateItemQuantityInCart,
 };

@@ -94,6 +94,28 @@ exports.deleteItemFromCart = async (req, res) => {
   }
 };
 
+exports.updateItemQuantity = async (req, res) => {
+  try {
+    const item = await db.cart_products.findOne({
+      where: {
+        cart_id: req.body.cart_id,
+        product_id: req.body.product_id
+      }
+    });
+
+    if (item) {
+      item.quantity = req.body.quantity;
+      await item.save();
+      res.json(item);
+    } else {
+      res.status(404).json({ error: 'Item not found in cart' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while updating the item quantity' });
+  }
+}
+
 exports.checkProductInCart = async (req, res) => {
   try {
     const item = await db.cart_products.findOne({

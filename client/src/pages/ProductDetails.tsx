@@ -17,14 +17,17 @@ import {
   addItemToCart,
   checkProductInCart,
   deleteItemFromCart,
+  updateItemQuantityInCart,
 } from "../service/cart";
 
 function ProductDetails() {
   const productID = Number(useParams().id);
 
   const [cartId, setCartId] = useState<number | null>(null);
-  const [productInCartData, setProductInCart] = useState<number | null>(null);
+  const [productInCartData, setProductInCart] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
+  // useEffect for cartId
   useEffect(() => {
     createOrFindCart().then((value) => {
       if (value !== null) {
@@ -35,6 +38,7 @@ function ProductDetails() {
     });
   }, []);
 
+  // useEffect for productInCart
   useEffect(() => {
     if (cartId !== null) {
       checkProductInCart(cartId, productID).then((value) => {
@@ -44,11 +48,24 @@ function ProductDetails() {
         }
       });
     }
+  }, [cartId, productID, quantity]);
+
+  //useEffect for quantity
+  useEffect(() => {
+    if (cartId !== null) {
+      checkProductInCart(cartId, productID).then((value) => {
+        if (value !== null) {
+          setQuantity(value.quantity);
+          console.log(value);
+        }
+      });
+    }
   }, [cartId, productID]);
 
   const [product, setProduct] = useState<ProductType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // useEffect for getting product by ID
   useEffect(() => {
     setIsLoading(true);
     findProductByID(productID).then((res) => {
@@ -127,22 +144,48 @@ function ProductDetails() {
             <InputGroup className="w-25">
               <InputGroup.Text
                 onClick={() => {
-                  null;
+                  setQuantity(quantity - 1);
+                  if (cartId !== null && productInCartData !== null) {
+                    updateItemQuantityInCart(
+                      cartId,
+                      product.id,
+                      Number(quantity - 1)
+                    );
+                  }
                 }}
               >
                 -
               </InputGroup.Text>
               <Form.Control
                 name="number"
-                value={1}
+                value={quantity}
                 className="text-center"
                 onChange={(e) => {
                   console.log(e.target.value);
+                  if (e.target.value === "") {
+                    setQuantity(""); // set the value as it is
+                  } else if (!isNaN(Number(e.target.value))) {
+                    setQuantity(Number(e.target.value));
+                    if (cartId !== null && productInCartData !== null) {
+                      updateItemQuantityInCart(
+                        cartId,
+                        product.id,
+                        Number(e.target.value)
+                      );
+                    }
+                  }
                 }}
               />
               <InputGroup.Text
                 onClick={() => {
-                  null;
+                  setQuantity(quantity + 1);
+                  if (cartId !== null && productInCartData !== null) {
+                    updateItemQuantityInCart(
+                      cartId,
+                      product.id,
+                      Number(quantity + 1)
+                    );
+                  }
                 }}
               >
                 +
@@ -157,7 +200,7 @@ function ProductDetails() {
                 variant="success"
                 onClick={() => {
                   if (cartId !== null) {
-                    addItemToCart(cartId, product.id, 1)
+                    addItemToCart(cartId, product.id, quantity)
                       .then((value) => {
                         console.log(value);
                         setProductInCart(value);

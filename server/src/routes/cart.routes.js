@@ -8,6 +8,8 @@ module.exports = (express, app) => {
     router.post('/items', controller.addItemToCart);
     // Remove an item from the cart.
     router.delete('/items', controller.deleteItemFromCart);
+    //update the quantity of the product in the cart
+    router.put('/items', controller.updateItemQuantity);
     //gets the product that is in cart
     router.get('/items', controller.checkProductInCart);
 
