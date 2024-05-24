@@ -74,3 +74,40 @@ exports.addItemToCart = async (req, res) => {
       .json({ error: "An error occurred while adding the item to the cart" });
   }
 };
+
+exports.deleteItemFromCart = async (req, res) => {
+  try {
+    const item = await db.cart_products.findOne({
+      where: {
+        cart_id: req.query.cart_id,
+        product_id: req.query.product_id
+      }
+    });
+
+    if (item) {
+      await item.destroy();
+      res.json({ message: 'Item removed from cart' });
+    } else {
+      res.status(404).json({ error: 'Item not found in cart' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while removing the item from the cart' });
+  }
+};
+
+exports.checkProductInCart = async (req, res) => {
+  try {
+    const item = await db.cart_products.findOne({
+      where: {
+        cart_id: req.query.cart_id,
+        product_id: req.query.product_id
+      }
+    });
+
+    res.json(item);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while checking if the product is in the cart' });
+  }
+}
