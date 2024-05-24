@@ -22,14 +22,17 @@ const createOrFindCart = async () => {
 
 // Add item to cart
 const addItemToCart = async (
-  cartId: number,
-  productId: number,
+  cart_id: number,
+  product_id: number,
   quantity: number
 ) => {
   try {
+    if (!cart_id) {
+      throw new Error("Cart ID is undefined");
+    }
     const response = await axios.post(`${config.HOST}/carts/items`, {
-      cartId,
-      productId,
+      cart_id,
+      product_id,
       quantity,
     });
     return response.data;

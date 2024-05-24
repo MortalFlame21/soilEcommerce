@@ -1,21 +1,37 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Spinner } from "react-bootstrap";
-//import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { allProducts, ProductType } from "../service/product";
-import { createOrFindCart } from "../service/cart";
+import { createOrFindCart, addItemToCart } from "../service/cart";
 
 function ProductCards() {
   // create or find cart
   const [cartId, setCartId] = useState<number | null>(null);
   useEffect(() => {
     createOrFindCart().then((value) => {
-      setCartId(value);
+      if (value !== null) {
+        setCartId(value);
+      } else {
+        console.error("Failed to create or find cart");
+      }
     });
   }, []);
 
-  const handleButtonClick = () => {
-    console.log("Cart ID:" + cartId);
+  const handleButtonClick = (productId: number) => {
+    if (cartId !== null) {
+      addItemToCart(cartId, productId, 1)
+        .then((value) => {
+          console.log(value);
+          toast.success("Item added to cart");
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to add item to cart");
+        });
+    } else {
+      console.error("Cart ID is null");
+    }
   };
 
   // getting the product from the server
@@ -113,7 +129,7 @@ function ProductCards() {
                 minWidth: "70%",
               }}
               onClick={() => {
-                handleButtonClick();
+                handleButtonClick(data[i].id);
               }}
             >
               Add to cart
