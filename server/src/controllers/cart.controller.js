@@ -54,11 +54,11 @@ exports.addItemToCart = async (req, res) => {
     const [item, created] = await db.cart_products.findOrCreate({
       where: {
         cart_id: req.body.cart_id,
-        product_id: req.body.product_id
+        product_id: req.body.product_id,
       },
       defaults: {
-        quantity: req.body.quantity
-      }
+        quantity: req.body.quantity,
+      },
     });
 
     if (!created) {
@@ -69,7 +69,9 @@ exports.addItemToCart = async (req, res) => {
     res.json(item);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while adding the item to the cart' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while adding the item to the cart" });
   }
 };
 
