@@ -168,7 +168,9 @@ function ProductDetails() {
                     setQuantity(1);
                   } else {
                     const quantity =
-                      value === "" ? "" : Math.max(1, Number(value));
+                      value === ""
+                        ? ""
+                        : Math.min(100, Math.max(1, Number(value)));
 
                     //@ts-expect-error Don't know how to fix it
                     setQuantity(quantity);
@@ -196,13 +198,15 @@ function ProductDetails() {
               />
               <InputGroup.Text
                 onClick={() => {
-                  setQuantity(quantity + 1);
-                  if (cartId !== null && productInCartData !== null) {
-                    updateItemQuantityInCart(
-                      cartId,
-                      product.id,
-                      Number(quantity + 1)
-                    );
+                  if (quantity < 100) {
+                    setQuantity(quantity + 1);
+                    if (cartId !== null && productInCartData !== null) {
+                      updateItemQuantityInCart(
+                        cartId,
+                        product.id,
+                        Number(quantity + 1)
+                      );
+                    }
                   }
                 }}
               >
