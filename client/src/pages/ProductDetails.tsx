@@ -165,15 +165,20 @@ function ProductDetails() {
                 onChange={(e) => {
                   console.log(e.target.value);
                   if (e.target.value === "") {
-                    setQuantity(""); // set the value as it is
+                    setQuantity(Number("")); // set the value as it is
                   } else if (!isNaN(Number(e.target.value))) {
-                    setQuantity(Number(e.target.value));
-                    if (cartId !== null && productInCartData !== null) {
-                      updateItemQuantityInCart(
-                        cartId,
-                        product.id,
-                        Number(e.target.value)
-                      );
+                    if (Number(e.target.value) < 1) {
+                      setQuantity(1);
+                    } else {
+                      setQuantity(Number(e.target.value));
+                      //setQuantity(Number(e.target.value));
+                      if (cartId !== null && productInCartData !== null) {
+                        updateItemQuantityInCart(
+                          cartId,
+                          product.id,
+                          Number(e.target.value)
+                        );
+                      }
                     }
                   }
                 }}
@@ -193,9 +198,6 @@ function ProductDetails() {
                 +
               </InputGroup.Text>
             </InputGroup>
-
-            {/* TODO: REMOVE LATER */}
-            {/* <p>{productInCart?.quantity}</p> */}
 
             {productInCartData === null && (
               <Button
