@@ -1,12 +1,14 @@
 import { Button, Image, Form } from "react-bootstrap";
 
-import { CartItem } from "../utils/cart";
+import { CartConsumer } from "./CartContext";
 
-function CartItems({ userCart }: { userCart: CartItem[] }) {
+function CartItems() {
+  const { userCart, updateItem, deleteItem } = CartConsumer();
+
   return userCart.map((cartItem) => {
     return (
       <div
-        key={cartItem.Product.id}
+        key={cartItem.product_id}
         className="d-flex gap-3 mb-3 border rounded-4 p-3 mx-auto"
         style={{ minWidth: 340, maxWidth: 540 }}
       >
@@ -25,7 +27,7 @@ function CartItems({ userCart }: { userCart: CartItem[] }) {
           </h4>
           <p>
             {cartItem.Product?.size} {cartItem.Product?.unit} -{"  "}
-            <span>${cartItem.Product?.price}</span>
+            <span>${cartItem.Product.price}</span>
           </p>
           <div className="d-flex">
             <Form.Control
@@ -34,17 +36,17 @@ function CartItems({ userCart }: { userCart: CartItem[] }) {
               min="1"
               max="50"
               value={cartItem.quantity}
-              className="text-center"
-              onChange={() => {
-                // updateItem(cartItem.item, Number(e.target.value));
+              className="text-center no-border-on-focus"
+              onChange={async (e) => {
+                await updateItem(cartItem.product_id, Number(e.target.value));
               }}
             />
 
             <Button
               variant="link"
               className="text-danger"
-              onClick={() => {
-                // updateItem(cartItem.item, 0);
+              onClick={async () => {
+                await deleteItem(cartItem.product_id);
               }}
             >
               Remove
@@ -52,7 +54,7 @@ function CartItems({ userCart }: { userCart: CartItem[] }) {
           </div>
           <p>
             <b>Total:</b> $
-            {(cartItem.Product?.price * cartItem.quantity).toFixed(2)}
+            {(cartItem.Product.price * cartItem.quantity).toFixed(2)}
           </p>
         </div>
       </div>

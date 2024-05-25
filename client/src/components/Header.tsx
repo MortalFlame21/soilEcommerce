@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Badge } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CartConsumer } from "./CartContext";
 import { AuthConsumer } from "./AuthContext";
 import Cart from "./Cart";
@@ -46,28 +46,19 @@ function Header() {
 
   const [show, setShow] = useState(false);
   const toggleShow = () => {
-    console.log("shw");
     setShow(!show);
   };
 
   //For the cart badge and button
-  const { getUserCart } = CartConsumer();
-
-  const [numberOfItemInCart, setNumberOfItemInCart] = useState(0);
-  useEffect(() => {
-    getUserCart().then((v) => {
-      setNumberOfItemInCart(v.length);
-      console.log(v);
-    });
-  }, [getUserCart]);
+  const { userCart } = CartConsumer();
 
   const CartButton = () => (
     <button className="cartButton mx-auto" onClick={toggleShow}>
       <div className="d-flex align-items-center">
         {cart}
-        {numberOfItemInCart > 0 && (
+        {userCart.length > 0 && (
           <Badge pill bg="danger" className="cartBadge">
-            {numberOfItemInCart}
+            {userCart.length}
           </Badge>
         )}
       </div>

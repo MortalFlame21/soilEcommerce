@@ -5,26 +5,12 @@ import { Button } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import CartItems from "./CartItems";
 import { useNavigate } from "react-router-dom";
-import { CartItem, getCartTotal } from "../utils/cart";
-import { useEffect, useState } from "react";
+import { getCartTotal } from "../utils/cart";
 
 function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
   const nav = useNavigate();
   const { user } = AuthConsumer();
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const { getUserCart } = CartConsumer();
-
-  useEffect(() => {
-    getUserCart()
-      .then((userCart) => {
-        setCart([...userCart]);
-
-        console.log(userCart);
-      })
-      .catch(() => {
-        setCart([]);
-      });
-  }, [getUserCart]);
+  const { userCart } = CartConsumer();
 
   return (
     <Offcanvas show={true} onHide={toggleShowCart} placement="end">
@@ -32,17 +18,17 @@ function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
         <Offcanvas.Title className="fs-2">Cart</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
-        {cart.length === 0 ? (
+        {userCart.length === 0 ? (
           <>
             <p className="fs-5">Your cart is currently empty &#128557;</p>
             {!user && <p className="fs-5">Login to add items!</p>}
           </>
         ) : (
-          <CartItems userCart={cart} />
+          <CartItems />
         )}
       </Offcanvas.Body>
 
-      {cart.length != 0 && (
+      {userCart.length != 0 && (
         <div className="p-3">
           <Button
             variant=""
@@ -61,7 +47,7 @@ function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
           </Button>
           <div className="d-flex justify-content-between pb-3">
             <h3 className="mb-0">Total</h3>
-            <p className="fs-4 mb-0">${getCartTotal(cart)}</p>
+            <p className="fs-4 mb-0">${getCartTotal(userCart)}</p>
           </div>
 
           <Button

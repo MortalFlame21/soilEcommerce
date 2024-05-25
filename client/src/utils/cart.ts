@@ -3,7 +3,6 @@
 const CART_LIST_KEY = "__CART";
 
 type Product = {
-  id: number;
   name: string;
   image: string;
   description: string;
@@ -15,6 +14,7 @@ type Product = {
 
 export type CartItem = {
   Product: Product;
+  product_id: number;
   quantity: number;
 };
 

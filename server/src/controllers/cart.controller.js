@@ -152,7 +152,7 @@ exports.getCart = async (req, res) => {
         {
           model: db.product,
           as: "Product", // use the same alias as defined in your association
-          attributes: ["image", "name", "price"], // specify the columns you want from the products table
+          attributes: ["image", "name", "price", "unit", "size"], // specify the columns you want from the products table
         },
       ],
     });
