@@ -144,13 +144,15 @@ function ProductDetails() {
             <InputGroup className="w-25">
               <InputGroup.Text
                 onClick={() => {
-                  setQuantity(quantity - 1);
-                  if (cartId !== null && productInCartData !== null) {
-                    updateItemQuantityInCart(
-                      cartId,
-                      product.id,
-                      Number(quantity - 1)
-                    );
+                  if (quantity > 1) {
+                    setQuantity(quantity - 1);
+                    if (cartId !== null && productInCartData !== null) {
+                      updateItemQuantityInCart(
+                        cartId,
+                        product.id,
+                        Number(quantity - 1)
+                      );
+                    }
                   }
                 }}
               >
