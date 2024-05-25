@@ -28,9 +28,15 @@ db.product.belongsToMany(db.cart, {
   foreignKey: "product_id",
 });
 
+db.cart_products.belongsTo(db.product, {
+  foreignKey: 'product_id',
+  as: 'Product' // unique alias
+});
+
 db.users.hasOne(db.cart, { foreignKey: 'user_id' });
 
 db.cart.belongsTo(db.users, { foreignKey: 'user_id' });
+
 db.cart.belongsToMany(db.product, {
   through: db.cart_products,
   foreignKey: "cart_id",

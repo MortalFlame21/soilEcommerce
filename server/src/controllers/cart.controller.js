@@ -135,12 +135,18 @@ exports.checkProductInCart = async (req, res) => {
 }
 
 //get all the products and quantity from cart id
+//get all the products and quantity from cart id
 exports.getCart = async (req, res) => {
   try {
     const cart = await db.cart_products.findAll({
       where: {
         cart_id: req.query.cart_id
-      }
+      },
+      include: [{
+        model: db.product,
+        as: 'Product', // use the same alias as defined in your association
+        attributes: ['image','name', 'price'] // specify the columns you want from the products table
+      }]
     });
 
     res.json(cart);
