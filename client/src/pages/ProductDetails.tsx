@@ -164,18 +164,12 @@ function ProductDetails() {
                 className="text-center"
                 onChange={(e) => {
                   const value = e.target.value;
-                  let newQuantity = "";
                   if (value !== "" && !isNaN(Number(value))) {
-                    newQuantity = Number(value) < 1 ? "1" : value;
-                  }
-                  // @ts-expect-error for some reason it doesn't like the fact that newQuantity is a string
-                  setQuantity(newQuantity);
-                  if (cartId !== null && productInCartData !== null) {
-                    updateItemQuantityInCart(
-                      cartId,
-                      product.id,
-                      Number(newQuantity)
-                    );
+                    const quantity = Number(value) < 1 ? 1 : Number(value);
+                    setQuantity(quantity);
+                    if (cartId !== null && productInCartData !== null) {
+                      updateItemQuantityInCart(cartId, product.id, quantity);
+                    }
                   }
                 }}
               />
