@@ -164,11 +164,27 @@ function ProductDetails() {
                 className="text-center"
                 onChange={(e) => {
                   const value = e.target.value;
-                  if (value !== "" && !isNaN(Number(value))) {
-                    const quantity = Number(value) < 1 ? 1 : Number(value);
-                    setQuantity(quantity);
+                  const quantity =
+                    value === "" ? "" : Math.max(1, Number(value));
+                  // @ts-expect-error can figure out another way to do this
+                  setQuantity(quantity);
+                  if (
+                    cartId !== null &&
+                    productInCartData !== null &&
+                    Number(quantity) > 0
+                  ) {
+                    updateItemQuantityInCart(
+                      cartId,
+                      product.id,
+                      Number(quantity)
+                    );
+                  }
+                }}
+                onBlur={(e) => {
+                  if (e.target.value === "") {
+                    setQuantity(1);
                     if (cartId !== null && productInCartData !== null) {
-                      updateItemQuantityInCart(cartId, product.id, quantity);
+                      updateItemQuantityInCart(cartId, product.id, 1);
                     }
                   }
                 }}
@@ -220,6 +236,7 @@ function ProductDetails() {
                       .then((value) => {
                         console.log(value);
                         setProductInCart(null);
+                        setQuantity(1);
                         toast.success("Item removed from cart");
                       })
                       .catch((error) => {
