@@ -14,7 +14,7 @@ type Product = {
 };
 
 export type CartItem = {
-  item: Product;
+  Product: Product;
   quantity: number;
 };
 
@@ -69,10 +69,10 @@ export function editProductInCart(email: string, p: Product, q: number) {
 }
 
 export function getCartTotal(userCart: CartItem[]) {
-  let total = 0;
-  userCart.forEach((cartItem) => {
-    total += cartItem.item.price * cartItem.quantity;
-  });
+  const total = 1;
+  // userCart.forEach((cartItem) => {
+  //   total += cartItem.item.price * cartItem.quantity;
+  // });
   return total.toFixed(2);
 }
 

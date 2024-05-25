@@ -57,6 +57,7 @@ function Header() {
   useEffect(() => {
     getUserCart().then((v) => {
       setNumberOfItemInCart(v.length);
+      console.log(v);
     });
   }, [getUserCart]);
 
