@@ -12,6 +12,8 @@ module.exports = (express, app) => {
     router.put('/items', controller.updateItemQuantity);
     //gets the product that is in cart
     router.get('/items', controller.checkProductInCart);
+    //gets the cart
+    router.get('/userCart', controller.getCart);
 
     // Add routes to server.
     app.use("/carts", router);

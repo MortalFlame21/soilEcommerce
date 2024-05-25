@@ -133,3 +133,19 @@ exports.checkProductInCart = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while checking if the product is in the cart' });
   }
 }
+
+//get all the products and quantity from cart id
+exports.getCart = async (req, res) => {
+  try {
+    const cart = await db.cart_products.findAll({
+      where: {
+        cart_id: req.query.cart_id
+      }
+    });
+
+    res.json(cart);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while getting the cart' });
+  }
+}

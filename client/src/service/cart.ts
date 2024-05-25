@@ -95,10 +95,24 @@ const updateItemQuantityInCart = async (
   }
 };
 
+//gets the users cart using the cart_id
+const getCart = async (cart_id: number) => {
+  try {
+    if (!cart_id) {
+      throw new Error("Cart ID is undefined");
+    }
+    const response = await axios.get(`${config.HOST}/carts/${cart_id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to get cart:", error);
+  }
+};
+
 export {
   createOrFindCart,
   addItemToCart,
   checkProductInCart,
   deleteItemFromCart,
   updateItemQuantityInCart,
+  getCart,
 };
