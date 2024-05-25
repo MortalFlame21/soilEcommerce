@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, Badge } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CartConsumer } from "./CartContext";
 import { AuthConsumer } from "./AuthContext";
 import Cart from "./Cart";
@@ -46,31 +46,25 @@ function Header() {
 
   const [show, setShow] = useState(false);
   const toggleShow = () => {
+    console.log("shw");
     setShow(!show);
   };
 
   //For the cart badge and button
-  const { userCart } = CartConsumer();
-  const numberOfItemInCart = userCart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const { getUserCart } = CartConsumer();
 
-  interface CartButtonProps {
-    cart: React.ReactNode;
-    numberOfItemInCart: number;
-    toggleShow: () => void;
-  }
+  const [numberOfItemInCart, setNumberOfItemInCart] = useState(0);
+  useEffect(() => {
+    getUserCart().then((v) => {
+      setNumberOfItemInCart(v.length);
+    });
+  }, [getUserCart]);
 
-  const CartButton: React.FC<CartButtonProps> = ({
-    cart,
-    numberOfItemInCart,
-    toggleShow,
-  }) => (
+  const CartButton = () => (
     <button className="cartButton mx-auto" onClick={toggleShow}>
       <div className="d-flex align-items-center">
         {cart}
-        {numberOfItemInCart === 0 ? null : (
+        {numberOfItemInCart > 0 && (
           <Badge pill bg="danger" className="cartBadge">
             {numberOfItemInCart}
           </Badge>
@@ -96,11 +90,7 @@ function Header() {
           </Link>
 
           <Nav className="ml-auto cart2">
-            <CartButton
-              cart={cart}
-              numberOfItemInCart={numberOfItemInCart}
-              toggleShow={toggleShow}
-            />
+            <CartButton />
           </Nav>
 
           <Navbar.Collapse id="basic-navbar-nav">
@@ -148,7 +138,6 @@ function Header() {
                     to="/profile"
                     className="mx-auto nav-link text-decoration-none text-reset user-profile"
                   >
-                    {/* error occurs for userImg in console */}
                     {userImg}
                   </Link>
 
@@ -190,11 +179,7 @@ function Header() {
             </Nav>
 
             <Nav className="ml-auto cart mx-5">
-              <CartButton
-                cart={cart}
-                numberOfItemInCart={numberOfItemInCart}
-                toggleShow={toggleShow}
-              />
+              <CartButton />
             </Nav>
           </Navbar.Collapse>
         </Container>

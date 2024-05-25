@@ -1,8 +1,17 @@
-import { Product } from "./product";
-
 // Everything related to storing and grabbing products from user cart
 
 const CART_LIST_KEY = "__CART";
+
+type Product = {
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  onSpecial: boolean;
+  size: number;
+  unit: string;
+};
 
 export type CartItem = {
   item: Product;

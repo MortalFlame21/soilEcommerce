@@ -6,20 +6,17 @@ import {
   useState,
 } from "react";
 
-import { Product } from "../utils/product";
-import {
-  CartItem,
-  editProductInCart,
-  emptyCart,
-  getUserCart,
-} from "../utils/cart";
+import { createOrFindCart, getCart } from "../service/cart";
+
 import { AuthConsumer } from "./AuthContext";
+import { CartItem } from "../utils/cart";
 
 type CartContextProps = {
-  userCart: CartItem[];
-  updateItem: (p: Product, q: number) => boolean;
-  getProductInCart: (p: Product | undefined) => CartItem | undefined;
-  emptyUserCart: () => void;
+  cartId: number | undefined;
+  getUserCart: () => Promise<CartItem[]>;
+  // updateItem: (p: Product, q: number) => boolean;
+  // getProductInCart: (p: Product | undefined) => CartItem | undefined;
+  // emptyUserCart: () => void;
   isCheckedOut: boolean;
   setCheckedOut: () => void;
 };
@@ -36,27 +33,24 @@ function useUserCart(): CartContextProps {
   const { user } = AuthConsumer();
   const [isCheckedOut, setIsCheckedOut] = useState(false); // for checkout
 
-  const [userCart, setUserCart] = useState<CartItem[]>(
-    getUserCart(user?.email || "")
-  );
+  const [cartId, setCartId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    setUserCart(getUserCart(user?.email || ""));
+    createOrFindCart()
+      .then((id) => {
+        if (!id) throw new Error("No id returned???");
+        setCartId(id);
+      })
+      .catch((e) => {
+        console.log(e);
+        setCartId(undefined);
+      });
   }, [user]);
 
-  const updateItem = (p: Product, q: number) => {
-    if (!user) return false;
-    setUserCart(editProductInCart(user.email, p, q));
-    return true;
-  };
-
-  const emptyUserCart = () => {
-    if (user) setUserCart(emptyCart(user.email));
-  };
-
-  const getProductInCart = (p: Product | undefined) => {
-    if (user && p) return userCart.find((pCart) => pCart.item.id === p.id);
-    return undefined;
+  const getUserCart = async () => {
+    if (!cartId) return [];
+    const cart = await getCart(cartId);
+    return cart;
   };
 
   const setCheckedOut = () => {
@@ -64,10 +58,8 @@ function useUserCart(): CartContextProps {
   };
 
   return {
-    userCart,
-    updateItem,
-    getProductInCart,
-    emptyUserCart,
+    cartId,
+    getUserCart,
     isCheckedOut,
     setCheckedOut,
   };
