@@ -163,23 +163,18 @@ function ProductDetails() {
                 value={quantity}
                 className="text-center"
                 onChange={(e) => {
-                  console.log(e.target.value);
-                  if (e.target.value === "") {
-                    setQuantity(Number("")); // set the value as it is
-                  } else if (!isNaN(Number(e.target.value))) {
-                    if (Number(e.target.value) < 1) {
-                      setQuantity(1);
-                    } else {
-                      setQuantity(Number(e.target.value));
-                      //setQuantity(Number(e.target.value));
-                      if (cartId !== null && productInCartData !== null) {
-                        updateItemQuantityInCart(
-                          cartId,
-                          product.id,
-                          Number(e.target.value)
-                        );
-                      }
-                    }
+                  const value = e.target.value;
+                  let newQuantity = "";
+                  if (value !== "" && !isNaN(Number(value))) {
+                    newQuantity = Number(value) < 1 ? "1" : value;
+                  }
+                  setQuantity(newQuantity);
+                  if (cartId !== null && productInCartData !== null) {
+                    updateItemQuantityInCart(
+                      cartId,
+                      product.id,
+                      Number(newQuantity)
+                    );
                   }
                 }}
               />
