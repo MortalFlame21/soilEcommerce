@@ -164,24 +164,29 @@ function ProductDetails() {
                 className="text-center no-border-on-focus"
                 onChange={(e) => {
                   const value = e.target.value;
-                  const quantity =
-                    value === "" ? "" : Math.max(1, Number(value));
-                  // @ts-expect-error can figure out another way to do this
-                  setQuantity(quantity);
-                  if (
-                    cartId !== null &&
-                    productInCartData !== null &&
-                    Number(quantity) > 0
-                  ) {
-                    updateItemQuantityInCart(
-                      cartId,
-                      product.id,
-                      Number(quantity)
-                    );
+                  if (isNaN(Number(value))) {
+                    setQuantity(1);
+                  } else {
+                    const quantity =
+                      value === "" ? "" : Math.max(1, Number(value));
+
+                    //@ts-expect-error Don't know how to fix it
+                    setQuantity(quantity);
+                    if (
+                      cartId !== null &&
+                      productInCartData !== null &&
+                      Number(quantity) > 0
+                    ) {
+                      updateItemQuantityInCart(
+                        cartId,
+                        product.id,
+                        Number(quantity)
+                      );
+                    }
                   }
                 }}
                 onBlur={(e) => {
-                  if (e.target.value === "") {
+                  if (e.target.value === "" || isNaN(Number(e.target.value))) {
                     setQuantity(1);
                     if (cartId !== null && productInCartData !== null) {
                       updateItemQuantityInCart(cartId, product.id, 1);
