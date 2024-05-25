@@ -42,7 +42,7 @@ exports.createOrFindCart = async (req, res) => {
     // if no carts created above, make one
     if (!cart) cart = await createCart(user_id);
 
-    res.json(cart);
+    res.status(200).json(cart);
   } catch (error) {
     console.error("Error in createOrFindCart:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -80,19 +80,21 @@ exports.deleteItemFromCart = async (req, res) => {
     const item = await db.cart_products.findOne({
       where: {
         cart_id: req.query.cart_id,
-        product_id: req.query.product_id
-      }
+        product_id: req.query.product_id,
+      },
     });
 
     if (item) {
       await item.destroy();
-      res.json({ message: 'Item removed from cart' });
+      res.json({ message: "Item removed from cart" });
     } else {
-      res.status(404).json({ error: 'Item not found in cart' });
+      res.status(404).json({ error: "Item not found in cart" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while removing the item from the cart' });
+    res.status(500).json({
+      error: "An error occurred while removing the item from the cart",
+    });
   }
 };
 
@@ -101,8 +103,8 @@ exports.updateItemQuantity = async (req, res) => {
     const item = await db.cart_products.findOne({
       where: {
         cart_id: req.body.cart_id,
-        product_id: req.body.product_id
-      }
+        product_id: req.body.product_id,
+      },
     });
 
     if (item) {
@@ -110,29 +112,33 @@ exports.updateItemQuantity = async (req, res) => {
       await item.save();
       res.json(item);
     } else {
-      res.status(404).json({ error: 'Item not found in cart' });
+      res.status(404).json({ error: "Item not found in cart" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while updating the item quantity' });
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the item quantity" });
   }
-}
+};
 
 exports.checkProductInCart = async (req, res) => {
   try {
     const item = await db.cart_products.findOne({
       where: {
         cart_id: req.query.cart_id,
-        product_id: req.query.product_id
-      }
+        product_id: req.query.product_id,
+      },
     });
 
     res.json(item);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while checking if the product is in the cart' });
+    res.status(500).json({
+      error: "An error occurred while checking if the product is in the cart",
+    });
   }
-}
+};
 
 //get all the products and quantity from cart id
 //get all the products and quantity from cart id
@@ -140,18 +146,20 @@ exports.getCart = async (req, res) => {
   try {
     const cart = await db.cart_products.findAll({
       where: {
-        cart_id: req.query.cart_id
+        cart_id: req.query.cart_id,
       },
-      include: [{
-        model: db.product,
-        as: 'Product', // use the same alias as defined in your association
-        attributes: ['image','name', 'price'] // specify the columns you want from the products table
-      }]
+      include: [
+        {
+          model: db.product,
+          as: "Product", // use the same alias as defined in your association
+          attributes: ["image", "name", "price"], // specify the columns you want from the products table
+        },
+      ],
     });
 
     res.json(cart);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'An error occurred while getting the cart' });
+    res.status(500).json({ error: "An error occurred while getting the cart" });
   }
-}
+};
