@@ -45,23 +45,8 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                <Checkout />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/checkout/thankyou"
-            element={
-              <ProtectedRoute>
-                <ThankYou />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/thankyou" element={<ThankYou />} />
 
           <Route
             path="/profile"
