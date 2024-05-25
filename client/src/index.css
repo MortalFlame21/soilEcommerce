@@ -188,3 +188,9 @@ a:hover {
 .flexible-w {
   width: min(100% - 3rem, 45ch);
 }
+
+.no-border-on-focus:focus {
+  outline: none;
+  box-shadow: none;
+  border: solid 1px var(--primary);
+}

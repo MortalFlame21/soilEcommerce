@@ -161,7 +161,7 @@ function ProductDetails() {
               <Form.Control
                 name="number"
                 value={quantity}
-                className="text-center"
+                className="text-center no-border-on-focus"
                 onChange={(e) => {
                   const value = e.target.value;
                   const quantity =
