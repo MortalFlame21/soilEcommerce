@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "./config";
+import { CartItem } from "../utils/cart";
 
 // Create or find cart
 const createOrFindCart = async () => {
@@ -96,15 +97,19 @@ const updateItemQuantityInCart = async (
 };
 
 //gets the users cart using the cart_id
-const getCart = async (cart_id: number) => {
+const getCart = async (cart_id: number): Promise<CartItem[]> => {
   try {
     if (!cart_id) {
       throw new Error("Cart ID is undefined");
     }
-    const response = await axios.get(`${config.HOST}/carts/${cart_id}`);
+    const response = await axios.get(
+      `${config.HOST}/carts/userCart/?cart_id=${cart_id}`
+    );
+
     return response.data;
   } catch (error) {
     console.error("Failed to get cart:", error);
+    return [];
   }
 };
 
