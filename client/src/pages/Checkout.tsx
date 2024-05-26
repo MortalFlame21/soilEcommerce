@@ -12,19 +12,18 @@ import { getCartTotal, CartItem } from "../utils/cart";
 function Checkout() {
   const nav = useNavigate();
 
+  const { userCart: initialUserCart, setCheckedOut } = CartConsumer();
   const [isLoading, setIsLoading] = useState(true);
-  const [userCart, setUserCart] = useState<CartItem[]>([]);
-  const { setCheckedOut } = CartConsumer();
+  const [userCart, setUserCart] = useState<CartItem[]>(initialUserCart);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { userCart } = await CartConsumer();
-      setUserCart(userCart);
+      setUserCart(initialUserCart);
       setIsLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [initialUserCart]);
 
   const checkout = () => {
     setCheckedOut();
