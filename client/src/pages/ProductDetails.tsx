@@ -12,47 +12,33 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { findProductByID, ProductType } from "../service/product";
-import {
-  createOrFindCart,
-  addItemToCart,
-  checkProductInCart,
-  deleteItemFromCart,
-  updateItemQuantityInCart,
-} from "../service/cart";
+import { checkProductInCart } from "../service/cart";
+import { CartConsumer } from "../components/CartContext";
 
 function ProductDetails() {
   const productID = Number(useParams().id);
 
-  const [cartId, setCartId] = useState<number | null>(null);
+  const { cartId, deleteItem, updateItem, addItem } = CartConsumer();
   const [productInCartData, setProductInCart] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
-  // useEffect for cartId
-  useEffect(() => {
-    createOrFindCart().then((value) => {
-      if (value !== null) {
-        setCartId(value);
-      } else {
-        console.error("Failed to create or find cart");
-      }
-    });
-  }, []);
-
   // useEffect for productInCart
   useEffect(() => {
-    if (cartId !== null) {
+    if (cartId) {
       checkProductInCart(cartId, productID).then((value) => {
         if (value !== null) {
           setProductInCart(value);
           console.log(value);
+        } else {
+          setProductInCart(null);
         }
       });
     }
-  }, [cartId, productID, quantity]);
+  }, [cartId, productID, quantity, deleteItem, updateItem, addItem]);
 
   //useEffect for quantity
   useEffect(() => {
-    if (cartId !== null) {
+    if (cartId) {
       checkProductInCart(cartId, productID).then((value) => {
         if (value !== null) {
           setQuantity(value.quantity);
@@ -146,13 +132,8 @@ function ProductDetails() {
                 onClick={() => {
                   if (quantity > 1) {
                     setQuantity(quantity - 1);
-                    if (cartId !== null && productInCartData !== null) {
-                      updateItemQuantityInCart(
-                        cartId,
-                        product.id,
-                        Number(quantity - 1)
-                      );
-                    }
+                    if (cartId && productInCartData !== null)
+                      updateItem(productID, Number(quantity - 1));
                   }
                 }}
               >
@@ -175,24 +156,18 @@ function ProductDetails() {
                     //@ts-expect-error Don't know how to fix it
                     setQuantity(quantity);
                     if (
-                      cartId !== null &&
+                      cartId &&
                       productInCartData !== null &&
                       Number(quantity) > 0
-                    ) {
-                      updateItemQuantityInCart(
-                        cartId,
-                        product.id,
-                        Number(quantity)
-                      );
-                    }
+                    )
+                      updateItem(product.id, Number(quantity));
                   }
                 }}
                 onBlur={(e) => {
                   if (e.target.value === "" || isNaN(Number(e.target.value))) {
                     setQuantity(1);
-                    if (cartId !== null && productInCartData !== null) {
-                      updateItemQuantityInCart(cartId, product.id, 1);
-                    }
+                    if (cartId && productInCartData !== null)
+                      updateItem(product.id, 1);
                   }
                 }}
               />
@@ -200,13 +175,8 @@ function ProductDetails() {
                 onClick={() => {
                   if (quantity < 100) {
                     setQuantity(quantity + 1);
-                    if (cartId !== null && productInCartData !== null) {
-                      updateItemQuantityInCart(
-                        cartId,
-                        product.id,
-                        Number(quantity + 1)
-                      );
-                    }
+                    if (cartId && productInCartData !== null)
+                      updateItem(productID, Number(quantity + 1));
                   }
                 }}
               >
@@ -217,18 +187,15 @@ function ProductDetails() {
             {productInCartData === null && (
               <Button
                 variant="success"
-                onClick={() => {
-                  if (cartId !== null) {
-                    addItemToCart(cartId, product.id, quantity)
-                      .then((value) => {
-                        console.log(value);
-                        setProductInCart(value);
-                        toast.success("Item added to cart");
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                        toast.error("Failed to add item to cart");
-                      });
+                onClick={async () => {
+                  try {
+                    if (cartId) {
+                      await addItem(productID, quantity);
+                      toast.success("Product added to cart!");
+                    }
+                  } catch (e) {
+                    console.log(e);
+                    toast.warning("Failed to add item to cart!");
                   }
                 }}
               >
@@ -239,19 +206,14 @@ function ProductDetails() {
             {productInCartData !== null && (
               <Button
                 variant="danger"
-                onClick={() => {
-                  if (cartId !== null) {
-                    deleteItemFromCart(cartId, product.id)
-                      .then((value) => {
-                        console.log(value);
-                        setProductInCart(null);
-                        setQuantity(1);
-                        toast.success("Item removed from cart");
-                      })
-                      .catch((error) => {
-                        console.error(error);
-                        toast.error("Failed to remove item from cart");
-                      });
+                onClick={async () => {
+                  try {
+                    if (cartId) {
+                      deleteItem(productID);
+                      toast.warning("Item removed from cart!");
+                    }
+                  } catch (e) {
+                    toast.warning("Failed to remove item from cart!");
                   }
                 }}
               >

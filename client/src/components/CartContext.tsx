@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import {
+  addItemToCart,
   createOrFindCart,
   deleteItemFromCart,
   getCart,
@@ -21,6 +22,7 @@ type CartContextProps = {
   userCart: CartItem[];
   deleteItem: (pId: number) => Promise<boolean>;
   updateItem: (pId: number, q: number) => Promise<boolean>;
+  addItem: (pId: number, q: number) => Promise<boolean>;
   isCheckedOut: boolean;
   setCheckedOut: () => void;
 };
@@ -41,41 +43,60 @@ function useUserCart(): CartContextProps {
   const [userCart, setUserCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    createOrFindCart()
-      .then((id) => {
-        if (!id) throw new Error("No id returned???");
-        setCartId(id);
-      })
-      .catch((e) => {
-        console.log(e);
+    async function setCartAndId() {
+      try {
+        setCartId(await createOrFindCart());
+        if (cartId) setUserCart(await getCart(cartId));
+      } catch {
         setCartId(undefined);
-      });
-
-    if (cartId)
-      getCart(cartId)
-        .then((userCart) => {
-          setUserCart([...userCart]);
-        })
-        .catch(() => {
-          setUserCart([]);
-        });
-    else setUserCart([]);
+        setUserCart([]);
+      }
+    }
+    setCartAndId();
   }, [user, cartId]);
 
   const deleteItem = async (product_id: number) => {
     if (!cartId) return false;
-    const success = await deleteItemFromCart(cartId, product_id);
-    const cart = await getCart(cartId);
-    setUserCart([...cart]);
-    return success;
+    try {
+      const success = await deleteItemFromCart(cartId, product_id);
+      const cart = await getCart(cartId);
+      setUserCart([...cart]);
+      return success;
+    } catch (e) {
+      return false;
+    }
   };
 
   const updateItem = async (product_id: number, quanity: number) => {
     if (!cartId) return false;
-    const success = await updateItemQuantityInCart(cartId, product_id, quanity);
-    const cart = await getCart(cartId);
-    setUserCart([...cart]);
-    return success;
+    try {
+      const success = await updateItemQuantityInCart(
+        cartId,
+        product_id,
+        quanity
+      );
+      const cart = await getCart(cartId);
+      setUserCart([...cart]);
+      console.log(success);
+      return success;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
+
+  const addItem = async (product_id: number, quanity: number) => {
+    if (!cartId) return false;
+    try {
+      const success = await addItemToCart(cartId, product_id, quanity);
+      const cart = await getCart(cartId);
+      setUserCart([...cart]);
+      console.log(success);
+      return success;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   };
 
   const setCheckedOut = () => {
@@ -87,6 +108,7 @@ function useUserCart(): CartContextProps {
     userCart,
     updateItem,
     deleteItem,
+    addItem,
     isCheckedOut,
     setCheckedOut,
   };
