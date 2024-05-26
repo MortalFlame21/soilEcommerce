@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container, Image } from "react-bootstrap";
 import { CartConsumer } from "../components/CartContext";
 import { Link, useNavigate } from "react-router-dom";
+import { CartItem } from "../utils/cart";
 
 const heart = (
   <svg
@@ -21,16 +22,30 @@ const heart = (
 
 function ThankYou() {
   const nav = useNavigate();
-  const { userCart, emptyUserCart, isCheckedOut, setCheckedOut } =
-    CartConsumer();
+
+  const {
+    userCart: initialUserCart,
+    isCheckedOut,
+    setCheckedOut,
+  } = CartConsumer();
+
+  const [userCart, setUserCart] = useState<CartItem[]>(initialUserCart);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setUserCart(initialUserCart);
+    };
+
+    fetchData();
+  }, [initialUserCart]);
 
   const removedUserCart = useRef(userCart);
 
   document.title = "Checkout | Thank you";
   useEffect(() => {
     if (!isCheckedOut) nav("/specials");
-    else emptyUserCart();
-  }, [isCheckedOut, nav, emptyUserCart, userCart]);
+    // else emptyUserCart();
+  }, [isCheckedOut, nav, userCart]);
 
   return (
     <Container className="col-9 mb-5">
@@ -74,31 +89,31 @@ function ThankYou() {
       {removedUserCart.current.map((cartItem) => {
         return (
           <div
-            key={cartItem.item.id}
+            key={cartItem.product_id}
             className="flexible-w mb-1 d-flex gap-3 border rounded-4 p-3 mx-auto"
             style={{ minWidth: 340, maxWidth: 540 }}
           >
             <Image
-              key={cartItem.item.id}
-              src={"/" + cartItem.item.image}
+              key={cartItem.product_id}
+              src={"/" + cartItem.Product.image}
               className="rounded-4"
-              alt={cartItem.item?.name}
+              alt={cartItem.Product?.name}
               style={{ width: 150, height: 150, objectFit: "cover" }}
               fluid
             />
 
             <div className="flex-grow-1 flex-fill">
               <h4>
-                {cartItem.item?.name}{" "}
+                {cartItem.Product?.name}{" "}
                 <span className="fs-6">({cartItem.quantity})</span>
               </h4>
               <p>
-                {cartItem.item?.size} {cartItem.item?.unit} -{"  "}
-                <span>${cartItem.item?.price}</span>
+                {cartItem.Product?.size} {cartItem.Product?.unit} -{"  "}
+                <span>${cartItem.Product?.price}</span>
               </p>
               <p>
                 <b>Total:</b> $
-                {(cartItem.item?.price * cartItem.quantity).toFixed(2)}
+                {(cartItem.Product?.price * cartItem.quantity).toFixed(2)}
               </p>
             </div>
           </div>
