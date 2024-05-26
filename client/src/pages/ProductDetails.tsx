@@ -18,7 +18,7 @@ import { CartConsumer } from "../components/CartContext";
 function ProductDetails() {
   const productID = Number(useParams().id);
 
-  const { cartId, deleteItem, updateItem, addItem } = CartConsumer();
+  const { cartId, deleteItem, updateItem, addItem, userCart } = CartConsumer();
   const [productInCartData, setProductInCart] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
 
@@ -46,7 +46,7 @@ function ProductDetails() {
         }
       });
     }
-  }, [cartId, productID]);
+  }, [cartId, productID, userCart]);
 
   const [product, setProduct] = useState<ProductType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
