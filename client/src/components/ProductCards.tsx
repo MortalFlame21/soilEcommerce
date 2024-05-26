@@ -3,23 +3,15 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { allProducts, ProductType } from "../service/product";
-import { createOrFindCart, addItemToCart } from "../service/cart";
+import { addItemToCart } from "../service/cart";
+import { CartConsumer } from "./CartContext";
 
 function ProductCards() {
   // create or find cart
-  const [cartId, setCartId] = useState<number | null>(null);
-  useEffect(() => {
-    createOrFindCart().then((value) => {
-      if (value !== null) {
-        setCartId(value);
-      } else {
-        console.error("Failed to create or find cart");
-      }
-    });
-  }, []);
+  const { cartId } = CartConsumer();
 
   const handleButtonClick = (productId: number) => {
-    if (cartId !== null) {
+    if (cartId) {
       addItemToCart(cartId, productId, 1)
         .then((value) => {
           console.log(value);

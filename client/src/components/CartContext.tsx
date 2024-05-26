@@ -44,9 +44,17 @@ function useUserCart(): CartContextProps {
 
   useEffect(() => {
     async function setCartAndId() {
+      if (!user) {
+        const cart_id = await createOrFindCart(undefined);
+        setCartId(cart_id);
+        if (cart_id) setUserCart(await getCart(cart_id));
+        return;
+      }
+
       try {
-        setCartId(await createOrFindCart());
-        if (cartId) setUserCart(await getCart(cartId));
+        const cart_id = await createOrFindCart(user?.user_id);
+        setCartId(cart_id);
+        if (cart_id) setUserCart(await getCart(cart_id));
       } catch {
         setCartId(undefined);
         setUserCart([]);

@@ -36,6 +36,7 @@ function useAuth(): AuthContextProps {
   const logout = () => {
     logoutUser();
     setUser(undefined);
+    localStorage.removeItem("cart_id");
     emptyCart(user?.email || "");
   };
 

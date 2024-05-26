@@ -3,18 +3,27 @@ import config from "./config";
 import { CartItem } from "../utils/cart";
 
 // Create or find cart
-const createOrFindCart = async () => {
+const createOrFindCart = async (user_id: number | undefined) => {
   try {
     const cartIdInLocalStorage = localStorage.getItem("cart_id");
-    const response = await axios.post(`${config.HOST}/carts`, {
-      cart_id: cartIdInLocalStorage,
-    });
+    let response;
+    if (user_id) {
+      response = await axios.post(`${config.HOST}/carts`, {
+        user_id: user_id,
+      });
+    } else {
+      console.log(`in cartIdInLocalStorage ${cartIdInLocalStorage}`);
+
+      response = await axios.post(`${config.HOST}/carts`, {
+        cart_id: cartIdInLocalStorage,
+      });
+    }
     const cartId = response.data.cart_id;
 
     if (cartIdInLocalStorage !== cartId) {
       localStorage.setItem("cart_id", cartId);
     }
-
+    console.log(`cartId ${cartId}\n\n\n`);
     return cartId;
   } catch (error) {
     console.error("Failed to create or find cart:", error);
