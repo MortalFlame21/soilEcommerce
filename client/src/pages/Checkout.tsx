@@ -11,26 +11,19 @@ import { getCartTotal, CartItem } from "../utils/cart";
 
 function Checkout() {
   const nav = useNavigate();
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const { getUserCart } = CartConsumer();
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userCart, setUserCart] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const fetchCart = async () => {
-      try {
-        setLoading(true);
-        const userCart = await getUserCart();
-        setCart([...userCart]);
-        setLoading(false);
-      } catch {
-        setCart([]);
-        setLoading(false);
-      }
+    const fetchData = async () => {
+      const { userCart } = await CartConsumer();
+      setUserCart(userCart);
+      setIsLoading(false);
     };
 
-    fetchCart();
-  }, [getUserCart]);
+    fetchData();
+  }, []);
 
   const checkout = () => {
     // setCheckedOut();
@@ -45,12 +38,12 @@ function Checkout() {
 
   useEffect(() => {
     document.title = "Checkout";
-    console.log(cart);
-    if (!loading && cart.length === 0) {
+    console.log(userCart);
+    if (!isLoading && userCart.length === 0) {
       toast.warning("Add items before checking out!");
       nav("/specials", { replace: true });
     }
-  }, [loading, cart, nav]);
+  }, [userCart, isLoading, nav]);
 
   return (
     <Container className="col-9 mb-5">
@@ -254,12 +247,12 @@ function Checkout() {
           <Row className=" justify-content-center">
             <Col className={window.innerWidth < 1472 ? "col-8" : "col-12"}>
               <h3 className="">Cart</h3>
-              <CartItems userCart={cart} />
-              {cart.length != 0 && (
+              <CartItems />
+              {userCart.length != 0 && (
                 <div className="p-3">
                   <div className="d-flex justify-content-between">
                     <h3 className="mb-0">Total</h3>
-                    <p className="fs-4 mb-0">${getCartTotal(cart)}</p>
+                    <p className="fs-4 mb-0">${getCartTotal(userCart)}</p>
                   </div>
                 </div>
               )}
