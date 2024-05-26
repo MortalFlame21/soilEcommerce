@@ -14,6 +14,8 @@ module.exports = (express, app) => {
     router.get('/items', controller.checkProductInCart);
     //gets the cart
     router.get('/userCart', controller.getCart);
+    //empty the cart
+    router.delete('/emptyCart', controller.emptyCart);
 
     // Add routes to server.
     app.use("/carts", router);

@@ -141,7 +141,6 @@ exports.checkProductInCart = async (req, res) => {
 };
 
 //get all the products and quantity from cart id
-//get all the products and quantity from cart id
 exports.getCart = async (req, res) => {
   try {
     const cart = await db.cart_products.findAll({
@@ -161,5 +160,22 @@ exports.getCart = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while getting the cart" });
+  }
+};
+
+
+//empty the users cart
+exports.emptyCart = async (req, res) => {
+  try {
+    const cart = await db.cart_products.destroy({
+      where: {
+        cart_id: req.query.cart_id,
+      },
+    });
+
+    res.json({ message: "Cart emptied" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while emptying the cart" });
   }
 };

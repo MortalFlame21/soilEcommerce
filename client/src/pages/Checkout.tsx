@@ -14,6 +14,7 @@ function Checkout() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [userCart, setUserCart] = useState<CartItem[]>([]);
+  const { setCheckedOut } = CartConsumer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +27,7 @@ function Checkout() {
   }, []);
 
   const checkout = () => {
-    // setCheckedOut();
+    setCheckedOut();
     toast.success("Thanks for purchasing!");
     nav("/checkout/thankyou");
   };
