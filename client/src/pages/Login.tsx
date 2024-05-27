@@ -8,12 +8,11 @@ import { AuthConsumer } from "../components/AuthContext";
 import useForm from "../utils/useForm";
 import { validateLoginIn } from "../utils/login";
 import { CartConsumer } from "../components/CartContext";
-import { emptyCart } from "../service/cart";
 
 function Login() {
   const nav = useNavigate();
   const { user, login } = AuthConsumer();
-  const { cartId } = CartConsumer();
+  const { emptyUserCart } = CartConsumer();
 
   useEffect(() => {
     document.title = "SOIL | Login";
@@ -25,7 +24,7 @@ function Login() {
 
   const successLogin = async () => {
     // clear the non-logged users cart and products
-    if (cartId) await emptyCart(cartId, user?.user_id);
+    await emptyUserCart();
 
     login(values.email);
 

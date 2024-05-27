@@ -10,7 +10,7 @@ import { getCartTotal } from "../utils/cart";
 function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
   const nav = useNavigate();
   const { user } = AuthConsumer();
-  const { userCart } = CartConsumer();
+  const { userCart, emptyUserCart } = CartConsumer();
 
   return (
     <Offcanvas show={true} onHide={toggleShowCart} placement="end">
@@ -33,8 +33,8 @@ function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
           <Button
             variant=""
             className="text-danger fs-6 mx-0 p-0 pb-2 w-100"
-            onClick={() => {
-              // emptyUserCart();
+            onClick={async () => {
+              await emptyUserCart();
             }}
           >
             <img

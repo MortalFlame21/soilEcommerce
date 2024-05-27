@@ -10,6 +10,7 @@ import {
   addItemToCart,
   createOrFindCart,
   deleteItemFromCart,
+  emptyCart,
   getCart,
   updateItemQuantityInCart,
 } from "../service/cart";
@@ -25,6 +26,7 @@ type CartContextProps = {
   addItem: (pId: number, q: number) => Promise<boolean>;
   isCheckedOut: boolean;
   setCheckedOut: () => void;
+  emptyUserCart: () => Promise<boolean>;
 };
 
 type Props = {
@@ -42,24 +44,25 @@ function useUserCart(): CartContextProps {
   const [cartId, setCartId] = useState<number | undefined>(undefined);
   const [userCart, setUserCart] = useState<CartItem[]>([]);
 
-  useEffect(() => {
-    async function setCartAndId() {
-      if (!user) {
-        const cart_id = await createOrFindCart(undefined);
-        setCartId(cart_id);
-        if (cart_id) setUserCart(await getCart(cart_id));
-        return;
-      }
-
-      try {
-        const cart_id = await createOrFindCart(user?.user_id);
-        setCartId(cart_id);
-        if (cart_id) setUserCart(await getCart(cart_id));
-      } catch {
-        setCartId(undefined);
-        setUserCart([]);
-      }
+  async function setCartAndId() {
+    if (!user) {
+      const cart_id = await createOrFindCart(undefined);
+      setCartId(cart_id);
+      if (cart_id) setUserCart(await getCart(cart_id));
+      return;
     }
+
+    try {
+      const cart_id = await createOrFindCart(user?.user_id);
+      setCartId(cart_id);
+      if (cart_id) setUserCart(await getCart(cart_id));
+    } catch {
+      setCartId(undefined);
+      setUserCart([]);
+    }
+  }
+
+  useEffect(() => {
     setCartAndId();
   }, [user, cartId]);
 
@@ -111,6 +114,18 @@ function useUserCart(): CartContextProps {
     setIsCheckedOut(!isCheckedOut);
   };
 
+  const emptyUserCart = async () => {
+    if (!cartId) return false;
+    try {
+      const success = await emptyCart(cartId, user?.user_id);
+      await setCartAndId();
+      return success;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  };
+
   return {
     cartId,
     userCart,
@@ -119,6 +134,7 @@ function useUserCart(): CartContextProps {
     addItem,
     isCheckedOut,
     setCheckedOut,
+    emptyUserCart,
   };
 }
 

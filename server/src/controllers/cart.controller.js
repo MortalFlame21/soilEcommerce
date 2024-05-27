@@ -1,4 +1,5 @@
 const db = require("../database");
+const user = require("../database/models/user");
 
 const createCart = async (user_id) => {
   try {
@@ -168,16 +169,13 @@ exports.emptyCart = async (req, res) => {
   try {
     const { cart_id, user_id } = req.query;
 
-    console.log(`cart_id ${cart_id} user_id ${user_id}`);
-
-    // non-logged in users
-    if (!user_id) {
+    // for non-logged in users remove their cart_ids
+    if (!user_id)
       await db.cart.destroy({
         where: {
           cart_id: cart_id,
         },
       });
-    }
 
     const cart = await db.cart_products.destroy({
       where: {
