@@ -69,10 +69,10 @@ export function editProductInCart(email: string, p: Product, q: number) {
 }
 
 export function getCartTotal(userCart: CartItem[]) {
-  const total = 1;
-  // userCart.forEach((cartItem) => {
-  //   total += cartItem.item.price * cartItem.quantity;
-  // });
+  let total = 0;
+  userCart.forEach((cartItem) => {
+    total += cartItem.Product.price * cartItem.quantity;
+  });
   return total.toFixed(2);
 }
 
