@@ -3,26 +3,22 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { allProducts, ProductType } from "../service/product";
-import { addItemToCart } from "../service/cart";
 import { CartConsumer } from "./CartContext";
 
 function ProductCards() {
   // create or find cart
-  const { cartId } = CartConsumer();
+  const { cartId, addItem } = CartConsumer();
 
-  const handleButtonClick = (productId: number) => {
-    if (cartId) {
-      addItemToCart(cartId, productId, 1)
-        .then((value) => {
-          console.log(value);
-          toast.success("Item added to cart");
-        })
-        .catch((error) => {
-          console.error(error);
-          toast.error("Failed to add item to cart");
-        });
-    } else {
-      console.error("Cart ID is null");
+  const handleButtonClick = async (productId: number) => {
+    try {
+      if (cartId) {
+        // just add one
+        await addItem(productId, 1);
+        toast.success("Product added to cart!");
+      }
+    } catch (e) {
+      console.log(e);
+      toast.warning("Failed to add item to cart!");
     }
   };
 
