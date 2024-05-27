@@ -7,10 +7,13 @@ import { toast } from "react-toastify";
 import { AuthConsumer } from "../components/AuthContext";
 import useForm from "../utils/useForm";
 import { validateLoginIn } from "../utils/login";
+import { CartConsumer } from "../components/CartContext";
+import { emptyCart } from "../service/cart";
 
 function Login() {
   const nav = useNavigate();
   const { user, login } = AuthConsumer();
+  const { cartId } = CartConsumer();
 
   useEffect(() => {
     document.title = "SOIL | Login";
@@ -21,10 +24,13 @@ function Login() {
   }, [user, nav]);
 
   const successLogin = async () => {
-    await login(values.email);
+    // clear the non-logged users cart and products
+    if (cartId) await emptyCart(cartId);
 
-    toast.success("Successfully logged in!");
+    login(values.email);
+
     nav("/profile", { replace: true });
+    toast.success("Successfully logged in!");
   };
 
   const { values, handleChangeValues, handleSubmit, errors } = useForm(
