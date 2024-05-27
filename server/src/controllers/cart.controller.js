@@ -163,19 +163,33 @@ exports.getCart = async (req, res) => {
   }
 };
 
-
 //empty the users cart
 exports.emptyCart = async (req, res) => {
   try {
+    const { cart_id, user_id } = req.query;
+
+    console.log(`cart_id ${cart_id} user_id ${user_id}`);
+
+    // non-logged in users
+    if (!user_id) {
+      await db.cart.destroy({
+        where: {
+          cart_id: cart_id,
+        },
+      });
+    }
+
     const cart = await db.cart_products.destroy({
       where: {
-        cart_id: req.query.cart_id,
+        cart_id: cart_id,
       },
     });
 
     res.json({ message: "Cart emptied" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while emptying the cart" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while emptying the cart" });
   }
 };

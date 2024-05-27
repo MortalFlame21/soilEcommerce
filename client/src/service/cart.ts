@@ -122,15 +122,14 @@ const getCart = async (cart_id: number): Promise<CartItem[]> => {
   }
 };
 
-const emptyCart = async (cart_id: number) => {
+const emptyCart = async (cart_id: number, user_id: number | undefined) => {
   try {
     if (!cart_id) {
       throw new Error("Cart ID is undefined");
     }
     const response = await axios.delete(
-      `${config.HOST}/carts/emptyCart/?cart_id=${cart_id}`
+      `${config.HOST}/carts/emptyCart/?cart_id=${cart_id}&?user_id=${user_id}`
     );
-    console.log(response.data);
     return response.data;
   } catch (e) {
     console.error("Failed to empty cart:", e);

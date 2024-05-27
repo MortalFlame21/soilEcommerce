@@ -25,7 +25,7 @@ function Login() {
 
   const successLogin = async () => {
     // clear the non-logged users cart and products
-    if (cartId) await emptyCart(cartId);
+    if (cartId) await emptyCart(cartId, user?.user_id);
 
     login(values.email);
 
