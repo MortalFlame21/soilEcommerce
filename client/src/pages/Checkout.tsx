@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { validateCheckout } from "../utils/checkout";
 import useForm from "../utils/useForm";
-import { getCartTotal, CartItem } from "../utils/cart";
+import { getCartTotal, CartItem } from "../service/cart";
 
 function Checkout() {
   const nav = useNavigate();
