@@ -21,27 +21,36 @@ db.cart_products = require("./models/cart_products.js")(
   db.sequelize,
   DataTypes
 );
+db.review = require("./models/review.js")(db.sequelize, DataTypes);
 
 // set up the relationships
+//
 db.product.belongsToMany(db.cart, {
   through: db.cart_products,
   foreignKey: "product_id",
 });
-
+//
 db.cart_products.belongsTo(db.product, {
-  foreignKey: 'product_id',
-  as: 'Product' // unique alias
+  foreignKey: "product_id",
+  as: "Product", // unique alias
 });
-
-db.users.hasOne(db.cart, { foreignKey: 'user_id' });
-
-db.cart.belongsTo(db.users, { foreignKey: 'user_id' });
+// 1:1 relationship, user has 1 cart_id
+db.users.hasOne(db.cart, { foreignKey: "user_id" });
+// 0:1 relationship, cart can have 0 or 1 users
+db.cart.belongsTo(db.users, { foreignKey: "user_id" });
 
 db.cart.belongsToMany(db.product, {
   through: db.cart_products,
   foreignKey: "cart_id",
 });
 
+// 1:N relationship, user can review many products
+db.users.hasMany(db.review, { foreignKey: "user_id", as: "Reviews" });
+db.review.belongsTo(db.users, { foreignKey: "user_id" });
+
+// review references a single product, product can be reviewed many times
+db.review.belongsTo(db.product, { foreignKey: "product_id" });
+db.product.hasMany(db.review, { foreignKey: "product_id" });
 
 db.sync = async () => {
   // Sync schema
@@ -93,7 +102,7 @@ async function seedUsers() {
       user.hash = await bcrypt.hash(user.hash, 1); // 1 salt round
       await db.users.create(user);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       console.log("User exists skip");
     }
   });
