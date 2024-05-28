@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import CartItems from "./CartItems";
 import { useNavigate } from "react-router-dom";
-import { getCartTotal } from "../utils/cart";
+import { getCartTotal } from "../service/cart";
 
 function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
   const nav = useNavigate();

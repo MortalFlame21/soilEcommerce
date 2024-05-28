@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Container, Image } from "react-bootstrap";
 import { CartConsumer } from "../components/CartContext";
 import { Link, useNavigate } from "react-router-dom";
-import { CartItem } from "../utils/cart";
+import { CartItem } from "../service/cart";
 
 const heart = (
   <svg

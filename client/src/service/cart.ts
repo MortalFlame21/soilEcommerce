@@ -1,6 +1,29 @@
 import axios from "axios";
 import config from "./config";
-import { CartItem } from "../utils/cart";
+
+type Product = {
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  onSpecial: boolean;
+  size: number;
+  unit: string;
+};
+
+export type CartItem = {
+  Product: Product;
+  product_id: number;
+  quantity: number;
+};
+
+export function getCartTotal(userCart: CartItem[]) {
+  let total = 0;
+  userCart.forEach((cartItem) => {
+    total += cartItem.Product.price * cartItem.quantity;
+  });
+  return total.toFixed(2);
+}
 
 // Create or find cart
 const createOrFindCart = async (user_id: number | undefined) => {
