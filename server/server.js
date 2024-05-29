@@ -8,8 +8,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
-
-
 db.sync({ logging: console.log });
 
 app.get("/", (req, res) => {
@@ -20,6 +18,7 @@ app.get("/", (req, res) => {
 require("./src/routes/users.js")(express, app);
 require("./src/routes/product.routes.js")(express, app);
 require("./src/routes/cart.routes.js")(express, app);
+require("./src/routes/review.routes.js")(express, app);
 
 const PORT = 4000;
 app.listen(PORT, () => {

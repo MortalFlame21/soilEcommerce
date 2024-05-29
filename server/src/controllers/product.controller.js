@@ -4,14 +4,9 @@ const db = require("../database");
 exports.all = async (req, res) => {
   const products = await db.product.findAll();
 
-  // Can use eager loading to join tables if needed, for example:
-  // const posts = await db.post.findAll({ include: db.user });
-
-  // Learn more about eager loading here: https://sequelize.org/master/manual/eager-loading.html
-
-
   res.json(products);
 };
+
 // Select a single product by its id.
 exports.one = async (req, res) => {
   const product = await db.product.findByPk(req.params.id);
@@ -28,7 +23,7 @@ exports.create = async (req, res) => {
     image: req.body.image,
     onSpecial: req.body.onSpecial,
     size: req.body.size,
-    unit: req.body.unit
+    unit: req.body.unit,
   });
 
   res.json(product);
