@@ -2,7 +2,7 @@ import { ReactNode, createContext, useContext, useState } from "react";
 
 import { User, logoutUser, saveLoggedIn, getLoggedIn } from "../utils/user";
 
-import { emptyCart } from "../utils/cart";
+//import { emptyCart } from "../utils/cart";
 import { getRegisteredUser } from "../service/user";
 
 // global user state property, handles easy login and logout
@@ -37,7 +37,7 @@ function useAuth(): AuthContextProps {
     logoutUser();
     setUser(undefined);
     localStorage.removeItem("cart_id");
-    emptyCart(user?.email || "");
+    //emptyCart(user?.email || "");
   };
 
   return {

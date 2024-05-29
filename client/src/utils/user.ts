@@ -1,6 +1,6 @@
 // Everything related to storing and grabbing user/users
 
-import { emptyCart } from "./cart";
+//import { emptyCart } from "./cart";
 
 const USER_LIST_KEY = "__USERS";
 const USER_KEY = "__USER";
@@ -64,7 +64,7 @@ export function logoutUser(): void {
 export function deleteUserOLD(email: string): void {
   const users = getUserList();
   delete users[email];
-  emptyCart(email);
+  //emptyCart(email);
   localStorage.setItem(USER_LIST_KEY, JSON.stringify(users));
 }
 
