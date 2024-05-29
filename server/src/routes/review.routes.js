@@ -13,7 +13,7 @@ module.exports = (express, app) => {
   router.patch("/", controller.edit);
 
   // Delete review
-  // router.delete("/", controller.delete);
+  router.delete("/", controller.delete);
 
   app.use("/reviews", router);
 };

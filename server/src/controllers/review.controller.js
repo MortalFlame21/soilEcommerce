@@ -2,8 +2,6 @@ const db = require("../database");
 const { validateUserID } = require("../utils/users");
 const validate = require("validator");
 
-// todo: validate .create
-
 // Get all reviews for the single product
 exports.getSingleProduct = async (req, res) => {
   const { product_id } = req.query;
@@ -145,6 +143,30 @@ exports.edit = async (req, res) => {
 
 // delete the review
 exports.delete = async (req, res) => {
-  const { user_id, product_id } = req.body;
-  res.send("DELETE / review");
+  const { user_id, product_id } = req.query;
+
+  try {
+    // not gonna validate user_id and product_id, gonna be done below
+    const review = await db.review.findOne({
+      where: {
+        user_id: user_id,
+        product_id: product_id,
+      },
+    });
+
+    if (!review) {
+      res
+        .status(500)
+        .json({ message: "Review does not exist, use POST method!" });
+      return;
+    }
+
+    await review.destroy();
+    res.status(200).json({
+      message: `user_id: ${user_id} review for product_id: ${product_id} removed!`,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
