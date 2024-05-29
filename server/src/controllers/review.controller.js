@@ -41,13 +41,17 @@ exports.create = async (req, res) => {
 
     const descriptionTrimmed = description.trim();
 
-    // check if the user has already created one ???
-    // const reviewExists = await db.review.findAll({
-    //   where: {
-    //     user_id: user_id,
-    //     product_id: product_id,
-    //   },
-    // });
+    // check if the user has already created one
+    const review = await db.review.findAll({
+      where: {
+        user_id: user_id,
+        product_id: product_id,
+      },
+    });
+    if (review.length > 0) {
+      res.status(500).json({ message: "Review exists, use PATCH method" });
+      return;
+    }
 
     if (
       !descriptionTrimmed ||
@@ -78,8 +82,6 @@ exports.create = async (req, res) => {
   }
 };
 
-// todo:
-// edit the review
 exports.edit = async (req, res) => {
   const { user_id, product_id, description, stars } = req.body;
 
@@ -94,6 +96,19 @@ exports.edit = async (req, res) => {
     const productIdValid = await db.product.findByPk(product_id);
     if (!productIdValid) {
       res.status(500).json({ message: "Invalid product_id!" });
+      return;
+    }
+
+    const review = await db.review.findAll({
+      where: {
+        user_id: user_id,
+        product_id: product_id,
+      },
+    });
+    if (review.length <= 0) {
+      res
+        .status(500)
+        .json({ message: "Review does not exist, use POST method" });
       return;
     }
 
