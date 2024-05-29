@@ -1,20 +1,26 @@
-import { compareUserPassword } from "../service/user";
-import { User, userExists } from "./user";
+import {
+  compareUserPassword,
+  findUserByEmail,
+  findUserByUsername,
+} from "../service/user";
+import { User } from "./user";
 
-function validateUsername(v: Record<string, string>, u: User) {
+async function validateUsername(v: Record<string, string>, u: User) {
   // no changes don't bother, might be a problem l8r on idk
   if (v.username == u.username) return "";
   else if (!v.username) return "Enter a username!";
   else if (v.username.length < 5)
     return "Username must be \u2265 5 characters in length";
+  else if (await findUserByUsername(v.username))
+    return "Username is already taken!";
   return "";
 }
 
-function validateEmail(v: Record<string, string>, u: User) {
+async function validateEmail(v: Record<string, string>, u: User) {
   if (v.email == u.email) return "";
   else if (!v.email) return "Enter a email!";
   else if (!/\S+@\S+\.\S+/.test(v.email)) return "Enter a valid email address!";
-  else if (userExists(v.email)) return "Email already taken!";
+  else if (await findUserByEmail(v.email)) return "Email already taken!";
 
   return "";
 }
@@ -56,8 +62,9 @@ async function validateEdit(v: Record<string, string>, u: User | undefined) {
   if (u === undefined)
     throw new Error("User is undefined when editing profile");
 
-  if (validateUsername(v, u)) errors.username = validateUsername(v, u);
-  if (validateEmail(v, u)) errors.email = validateEmail(v, u);
+  if (await validateUsername(v, u))
+    errors.username = await validateUsername(v, u);
+  if (await validateEmail(v, u)) errors.email = await validateEmail(v, u);
 
   // validate the old
   const comparePasswordInvalid = await validateOldPassword(

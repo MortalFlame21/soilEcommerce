@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AuthConsumer } from "../AuthContext";
-import { deleteUserOLD } from "../../utils/user";
 import { deleteUser } from "../../service/user";
 
 function DeleteProfile() {
@@ -17,9 +16,6 @@ function DeleteProfile() {
     handleClose();
 
     if (await deleteUser(user!.user_id)) {
-      // remove this function below l8r
-      deleteUserOLD(user!.email);
-
       toast.warning("Account deleted!", {
         position: "top-center",
       });

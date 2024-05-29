@@ -17,14 +17,13 @@ async function validateUsername(v: Record<string, string>): Promise<string> {
   else if (v.username.length < 5)
     return "Username must be \u2265 5 characters in length";
   else if (await findUserByUsername(v.username))
-    return "Username is already taken";
+    return "Username is already taken!";
   return "";
 }
 
 async function validateEmail(v: Record<string, string>): Promise<string> {
   if (!v.email) return "Enter a email!";
   else if (!/\S+@\S+\.\S+/.test(v.email)) return "Enter a valid email address!";
-  // else if (userExists(v.email)) return "Email already taken!";
   else if (await findUserByEmail(v.email)) return "Email already taken!";
   return "";
 }
