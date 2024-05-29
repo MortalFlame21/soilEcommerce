@@ -10,7 +10,7 @@ module.exports = (express, app) => {
   router.post("/", controller.create);
 
   // Modify review
-  // router.patch("/", controller.edit);
+  router.patch("/", controller.edit);
 
   // Delete review
   // router.delete("/", controller.delete);
