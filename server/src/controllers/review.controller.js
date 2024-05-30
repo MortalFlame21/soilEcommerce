@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const db = require("../database");
 const { validateUserID } = require("../utils/users");
 const validate = require("validator");
@@ -22,7 +23,7 @@ exports.getSingleProduct = async (req, res) => {
 
 // Create a new review
 exports.create = async (req, res) => {
-  const { user_id, product_id, description, stars } = req.body;
+  const { user_id, product_id, title, description, stars } = req.body;
   try {
     const idInvalid = await validateUserID(user_id);
     if (idInvalid) {
@@ -37,8 +38,6 @@ exports.create = async (req, res) => {
       return;
     }
 
-    const descriptionTrimmed = description.trim();
-
     // check if the user has already created one
     const review = await db.review.findAll({
       where: {
@@ -51,6 +50,16 @@ exports.create = async (req, res) => {
       return;
     }
 
+    const titleTrimmed = title.trim();
+    if (
+      !titleTrimmed ||
+      !validate.isLength(titleTrimmed, { min: 5, max: 100 })
+    ) {
+      res.status(500).json({ message: "Invalid product review title!" });
+      return;
+    }
+
+    const descriptionTrimmed = description.trim();
     if (
       !descriptionTrimmed ||
       !validate.isLength(descriptionTrimmed, { min: 5, max: 100 })
@@ -67,6 +76,7 @@ exports.create = async (req, res) => {
     await db.review.create({
       user_id: user_id,
       product_id: product_id,
+      title: titleTrimmed,
       description: descriptionTrimmed,
       stars: stars,
     });
@@ -81,7 +91,7 @@ exports.create = async (req, res) => {
 };
 
 exports.edit = async (req, res) => {
-  const { user_id, product_id, description, stars } = req.body;
+  const { user_id, product_id, title, description, stars } = req.body;
 
   try {
     const idInvalid = await validateUserID(user_id);
@@ -110,6 +120,15 @@ exports.edit = async (req, res) => {
       return;
     }
 
+    const titleTrimmed = title.trim();
+    if (
+      !titleTrimmed ||
+      !validate.isLength(titleTrimmed, { min: 5, max: 100 })
+    ) {
+      res.status(500).json({ message: "Invalid product review title!" });
+      return;
+    }
+
     const descriptionTrimmed = description.trim();
     if (
       !descriptionTrimmed ||
@@ -124,10 +143,14 @@ exports.edit = async (req, res) => {
       return;
     }
 
+    console.log(Sequelize.NOW);
+
     await db.review.update(
       {
+        title: titleTrimmed,
         description: descriptionTrimmed,
         stars: stars,
+        date: Sequelize.NOW,
       },
       { where: { user_id: user_id, product_id: product_id } }
     );
