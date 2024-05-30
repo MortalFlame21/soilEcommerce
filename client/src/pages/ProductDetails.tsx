@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { findProductByID, ProductType } from "../service/product";
 import { checkProductInCart } from "../service/cart";
 import { CartConsumer } from "../components/CartContext";
+import ReviewsForm from "../components/ReviewForm";
 
 function ProductDetails() {
   const productID = Number(useParams().id);
@@ -229,6 +230,12 @@ function ProductDetails() {
           <p>{product.description}</p>
         </div>
       </Col>
+
+      <Row>
+        <Col xs={12} md={6}>
+          <ReviewsForm />
+        </Col>
+      </Row>
     </Container>
   );
 }

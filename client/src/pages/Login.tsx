@@ -28,7 +28,7 @@ function Login() {
 
     login(values.email);
 
-    nav("/profile", { replace: true });
+    nav("/", { replace: true });
     toast.success("Successfully logged in!");
   };
 
