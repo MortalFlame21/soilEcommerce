@@ -25,6 +25,7 @@ export async function createReview(
       description: description,
       stars: stars,
     });
+    console.log(res.data);
     return res.data;
   } catch {
     return [];

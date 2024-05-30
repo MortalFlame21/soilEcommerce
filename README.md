@@ -58,11 +58,3 @@ https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a1
 
 - [Russell Sheikh](https://github.com/Russell0014)
 - [Mark Castillo](https://github.com/2trill2code)
-
-## Temporarly issues
-
-- Changed useForm to async, test:
-  - edit
-  - login
-  - signup
-  - checkout
