@@ -1,14 +1,13 @@
 import { Button, Form } from "react-bootstrap";
 import useForm from "../utils/useForm";
+import { validateReview } from "../utils/review";
 
 function ReviewsForm() {
   const { values, handleChangeValues, handleSubmit, errors } = useForm(
-    () => {},
     async () => {
-      console.log("values: ", values);
-
-      return { title: "bruh" };
-    }
+      console.log("nice");
+    },
+    validateReview
   );
 
   return (
