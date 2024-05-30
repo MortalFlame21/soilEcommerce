@@ -13,6 +13,7 @@ export async function getProductReviews(id: number) {
 export async function createReview(
   user_id: number,
   product_id: number,
+  title: string,
   description: string,
   stars: number
 ) {
@@ -20,6 +21,7 @@ export async function createReview(
     const res = await axios.post(`${config.HOST}/reviews/`, {
       user_id: user_id,
       product_id: product_id,
+      title: title,
       description: description,
       stars: stars,
     });
@@ -32,12 +34,14 @@ export async function createReview(
 export async function updateReview(
   user_id: number,
   product_id: number,
+  title: string,
   description: string,
   stars: number
 ) {
   try {
     const res = await axios.patch(`${config.HOST}/reviews/`, {
       user_id: user_id,
+      title: title,
       product_id: product_id,
       description: description,
       stars: stars,
