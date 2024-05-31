@@ -115,7 +115,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
   return (
     <>
       <Row className="mb-4">
-        <h3>Reviews</h3>
+        <h3 className="mb-4">Reviews</h3>
         <Col>
           <div className="text-center">
             <h4>{stars}/5</h4>
