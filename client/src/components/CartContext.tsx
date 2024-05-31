@@ -88,7 +88,6 @@ function useUserCart(): CartContextProps {
       );
       const cart = await getCart(cartId);
       setUserCart([...cart]);
-      console.log(success);
       return success;
     } catch (e) {
       console.log(e);
@@ -102,7 +101,6 @@ function useUserCart(): CartContextProps {
       const success = await addItemToCart(cartId, product_id, quanity);
       const cart = await getCart(cartId);
       setUserCart([...cart]);
-      console.log(success);
       return success;
     } catch (e) {
       console.log(e);

@@ -29,7 +29,6 @@ function ProductDetails() {
       checkProductInCart(cartId, productID).then((value) => {
         if (value !== null) {
           setProductInCart(value);
-          console.log(value);
         } else {
           setProductInCart(null);
         }
@@ -43,7 +42,6 @@ function ProductDetails() {
       checkProductInCart(cartId, productID).then((value) => {
         if (value !== null) {
           setQuantity(value.quantity);
-          console.log(value);
         }
       });
     }
