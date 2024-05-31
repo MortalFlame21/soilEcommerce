@@ -25,8 +25,6 @@ function Reviews({ productId }: ReviewsProps) {
     });
   }, [productId]);
 
-  console.log(userReviews);
-
   function ReviewCards({ review }: { review: Review }) {
     return (
       <div className="rounded-1" style={{ backgroundColor: "#cde9d7" }}>
