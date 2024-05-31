@@ -10,10 +10,12 @@ import {
 import { AuthConsumer } from "./AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import StarRating from "./StarRating";
 
 function ReviewsForm({ productId }: { productId: number }) {
   const { user } = AuthConsumer();
 
+  const [stars, setStars] = useState(0);
   const [isReviewed, setIsReviewed] = useState(false);
   const [userReview, setUserReview] = useState<Review | undefined>(undefined);
 
@@ -22,9 +24,19 @@ function ReviewsForm({ productId }: { productId: number }) {
       setIsReviewed(() => false);
       return;
     }
-    const userReview = await getProductReviews(productId, user?.user_id);
-    setIsReviewed(() => userReview.length > 0);
-    setUserReview(() => (userReview.length > 0 ? userReview.at(0) : undefined));
+    const _userReview = await getProductReviews(productId, user?.user_id);
+    setIsReviewed(() => _userReview.length > 0);
+    setUserReview(() =>
+      _userReview.length > 0 ? _userReview.at(0) : undefined
+    );
+
+    const _userReviews = await getProductReviews(productId);
+    setStars(
+      () =>
+        // sum / tot = avg
+        _userReviews.reduce((acc, rev) => acc + rev.stars, 0) /
+          _userReviews.length || 0
+    );
   }
 
   async function createOrUpdateReview() {
@@ -83,24 +95,20 @@ function ReviewsForm({ productId }: { productId: number }) {
     <>
       <Row className="mb-4">
         <Col>
+          <h3>Reviews</h3>
           <h4>Stars</h4>
-          <p>AVG_STARS/5</p>
-          <p>AVG_STARS_IMG (HOW MANY PEOPLE REVIEWED IT)</p>
-
-          {/* calc avg stars */}
+          <h5>{stars}/5</h5>
+          <StarRating rating={stars} />
         </Col>
         <Col>
           <h4>Review the product</h4>
           <p>Share your thoughts with other customers!</p>
 
-          {isReviewed ? (
-            <>
-              <Button onClick={() => _setShowForm()}>Edit</Button>
-              <Button onClick={() => _setShowForm()}>Delete</Button>
-            </>
-          ) : (
-            <Button onClick={() => _setShowForm()}>Write a review</Button>
-          )}
+          <div className="d-flex gap-1">
+            <Button variant="success" onClick={() => _setShowForm()}>
+              {isReviewed ? "Edit" : "Write a review"}
+            </Button>
+          </div>
         </Col>
       </Row>
       {showForm && (
