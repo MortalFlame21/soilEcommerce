@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
 import { CartConsumer } from "../components/CartContext";
@@ -7,23 +7,13 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { validateCheckout } from "../utils/checkout";
 import useForm from "../utils/useForm";
-import { getCartTotal, CartItem } from "../service/cart";
+import { getCartTotal, getCart } from "../service/cart";
 
 function Checkout() {
   const nav = useNavigate();
 
-  const { userCart: initialUserCart, setCheckedOut } = CartConsumer();
+  const { userCart, setCheckedOut, cartId } = CartConsumer();
   const [isLoading, setIsLoading] = useState(true);
-  const [userCart, setUserCart] = useState<CartItem[]>(initialUserCart);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setUserCart(initialUserCart);
-      setIsLoading(false);
-    };
-
-    fetchData();
-  }, [initialUserCart]);
 
   const checkout = () => {
     setCheckedOut();
@@ -38,12 +28,19 @@ function Checkout() {
 
   useEffect(() => {
     document.title = "Checkout";
-    console.log(userCart);
-    if (!isLoading && userCart.length === 0) {
-      toast.warning("Add items before checking out!");
-      nav("/specials", { replace: true });
-    }
-  }, [userCart, isLoading, nav]);
+
+    const fetchData = async () => {
+      if (!cartId) return;
+      let result = [];
+      if (cartId) result = await getCart(cartId);
+      if (result.length === 0) {
+        toast.warning("Add items before checking out!");
+        nav("/specials", { replace: true });
+      } else setIsLoading(() => false);
+    };
+
+    fetchData();
+  }, [cartId, userCart, nav]);
 
   return (
     <Container className="col-9 mb-5">
@@ -245,18 +242,24 @@ function Checkout() {
 
         <Col className="mh50">
           <Row className=" justify-content-center">
-            <Col className={window.innerWidth < 1472 ? "col-8" : "col-12"}>
-              <h3 className="">Cart</h3>
-              <CartItems />
-              {userCart.length != 0 && (
-                <div className="p-3">
-                  <div className="d-flex justify-content-between">
-                    <h3 className="mb-0">Total</h3>
-                    <p className="fs-4 mb-0">${getCartTotal(userCart)}</p>
+            {!isLoading ? (
+              <Col className={window.innerWidth < 1472 ? "col-8" : "col-12"}>
+                <h3 className="">Cart</h3>
+                <CartItems />
+                {userCart.length != 0 && (
+                  <div className="p-3">
+                    <div className="d-flex justify-content-between">
+                      <h3 className="mb-0">Total</h3>
+                      <p className="fs-4 mb-0">${getCartTotal(userCart)}</p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </Col>
+                )}
+              </Col>
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )}
           </Row>
         </Col>
       </Row>

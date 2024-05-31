@@ -1,6 +1,7 @@
 import { Button, Image, Form } from "react-bootstrap";
 
 import { CartConsumer } from "./CartContext";
+import { getCartTotal } from "../service/cart";
 
 function CartItems() {
   const { userCart, updateItem, deleteItem } = CartConsumer();
@@ -53,8 +54,7 @@ function CartItems() {
             </Button>
           </div>
           <p>
-            <b>Total:</b> $
-            {(cartItem.Product.price * cartItem.quantity).toFixed(2)}
+            <b>Total:</b> ${getCartTotal(userCart)}
           </p>
         </div>
       </div>
