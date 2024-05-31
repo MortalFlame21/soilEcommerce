@@ -8,8 +8,10 @@ interface ReviewContainerProps {
 }
 
 function ReviewContainer({ productID }: ReviewContainerProps) {
+  const [reload, setReload] = useState(false);
   // useEffect for checking if product has reviews
   const [hasReviews, setHasReviews] = useState(false);
+
   useEffect(() => {
     const fetchReviews = async () => {
       const reviews = await getProductReviews(productID, undefined);
@@ -17,9 +19,7 @@ function ReviewContainer({ productID }: ReviewContainerProps) {
     };
 
     fetchReviews();
-  }, [productID]);
-
-  const [reload, setReload] = useState(false);
+  }, [productID, reload]);
 
   const handleUpdate = () => {
     setReload(() => !reload);
