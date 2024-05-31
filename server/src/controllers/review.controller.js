@@ -27,7 +27,6 @@ exports.getSingleProduct = async (req, res) => {
     // a non existent product_id will return []
     res.status(200).json(productReviews);
   } catch (e) {
-    console.log(e);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -71,14 +70,17 @@ exports.create = async (req, res) => {
     }
 
     const descriptionTrimmed = description.trim();
+    const wordCount = descriptionTrimmed.split(" ").length;
+
     if (
       !descriptionTrimmed ||
-      !validate.isLength(descriptionTrimmed, { min: 5, max: 100 })
+      !validate.isLength(descriptionTrimmed, { min: 5, max: 450 }) ||
+      wordCount < 5 ||
+      wordCount > 100
     ) {
       res.status(500).json({ message: "Invalid product review description!" });
       return;
     }
-
     if (stars < 1 || stars > 5) {
       res.status(500).json({ message: `Invalid star rating! stars, ${stars}` });
       return;
@@ -96,7 +98,6 @@ exports.create = async (req, res) => {
       message: `Success. user_id: ${user_id} has reviewed product_id: ${product_id}`,
     });
   } catch (e) {
-    console.log(e);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -141,9 +142,13 @@ exports.edit = async (req, res) => {
     }
 
     const descriptionTrimmed = description.trim();
+    const wordCount = descriptionTrimmed.split(" ").length;
+
     if (
       !descriptionTrimmed ||
-      !validate.isLength(descriptionTrimmed, { min: 5, max: 100 })
+      !validate.isLength(descriptionTrimmed, { min: 5, max: 450 }) ||
+      wordCount < 5 ||
+      wordCount > 100
     ) {
       res.status(500).json({ message: "Invalid product review description!" });
       return;
@@ -153,8 +158,6 @@ exports.edit = async (req, res) => {
       res.status(500).json({ message: `Invalid star rating! stars, ${stars}` });
       return;
     }
-
-    console.log(Sequelize.NOW);
 
     await db.review.update(
       {
@@ -170,7 +173,6 @@ exports.edit = async (req, res) => {
       message: `Success. user_id: ${user_id} has modified the review for product_id: ${product_id}`,
     });
   } catch (e) {
-    console.log(e);
     res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -1,10 +1,20 @@
 import axios from "axios";
 import config from "./config";
 
+export type Review = {
+  id: number;
+  stars: number;
+  title: string;
+  description: string;
+  user_id: number;
+  product_id: number;
+  review_created: string;
+};
+
 export async function getProductReviews(
   product_id: number,
-  user_id: number | undefined
-) {
+  user_id: number | undefined = undefined
+): Promise<Review[]> {
   try {
     const res = await axios.get(
       `${config.HOST}/reviews/?product_id=${product_id}&user_id=${
@@ -32,8 +42,10 @@ export async function createReview(
       description: description,
       stars: stars,
     });
+    console.log("createReview", res.data);
     return res.data;
   } catch (e) {
+    console.log(e);
     return [];
   }
 }
@@ -53,8 +65,10 @@ export async function updateReview(
       description: description,
       stars: stars,
     });
+    console.log("updateReview", res.data);
     return res.data;
-  } catch {
+  } catch (e) {
+    console.log(e);
     return [];
   }
 }

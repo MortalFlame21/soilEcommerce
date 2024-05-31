@@ -13,10 +13,15 @@ function validateTitle(title: string) {
 }
 
 function validateDescription(description: string) {
-  if (!description || !description.trim()) return "Enter a review description!";
+  const descriptionTrimmed = description.trim();
+  if (!description || !descriptionTrimmed) return "Enter a review description!";
 
   const wordCount = description.trim().split(" ").length;
-  if (wordCount < 5)
+  if (descriptionTrimmed.length < 5)
+    return "Description is too short!, must be more than 5 characters";
+  if (descriptionTrimmed.length > 450)
+    return "Description is too short!, must be less than 450 characters";
+  else if (wordCount < 5)
     return "Description is too short, must be more than 5 words!";
   else if (wordCount > 100)
     return "Description is too long, must be less than 100 words!";
