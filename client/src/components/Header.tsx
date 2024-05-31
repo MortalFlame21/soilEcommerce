@@ -50,7 +50,7 @@ function Header() {
   };
 
   //For the cart badge and button
-  const { userCart, cartId } = CartConsumer();
+  const { userCart } = CartConsumer();
 
   const CartButton = () => (
     <button className="cartButton mx-auto" onClick={toggleShow}>
@@ -101,14 +101,6 @@ function Header() {
                 onClick={handleToggle}
               >
                 Diet planner
-              </Link>
-
-              <Link
-                to="/"
-                className="mx-auto nav-link text-decoration-none text-reset"
-                onClick={handleToggle}
-              >
-                CartId: {cartId}
               </Link>
 
               <Link

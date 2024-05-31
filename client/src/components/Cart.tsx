@@ -12,21 +12,13 @@ function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
   return (
     <Offcanvas show={true} onHide={toggleShowCart} placement="end">
       <Offcanvas.Header closeButton>
-        <Offcanvas.Title className="fs-2">Cart</Offcanvas.Title>
+        <Offcanvas.Title className="fs-2 fw-semibold">CART</Offcanvas.Title>
       </Offcanvas.Header>
+      <hr className="mx-4" />
       <Offcanvas.Body>
         {userCart.length === 0 ? (
           <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100vh",
-              }}
-            >
-              <p className="fs-5">Your cart is currently empty &#128557;</p>
-            </div>
+            <p className="fs-5">Your cart is currently empty &#128557;</p>
           </>
         ) : (
           <CartItems />
