@@ -27,7 +27,11 @@ function ReviewContainer({ productID }: ReviewContainerProps) {
 
   return (
     <>
-      <ReviewsForm productId={productID} onUpdate={handleUpdate} />
+      <ReviewsForm
+        productId={productID}
+        reload={reload}
+        onUpdate={handleUpdate}
+      />
       {hasReviews && (
         <Reviews
           productId={productID}

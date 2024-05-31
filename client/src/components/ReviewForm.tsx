@@ -8,23 +8,28 @@ import {
   Review,
 } from "../service/review";
 import { AuthConsumer } from "./AuthContext";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 
 interface ReviewsFormProps {
   productId: number;
   onUpdate: () => void;
+  reload: boolean;
 }
 
-const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
+const ReviewsForm: React.FC<ReviewsFormProps> = ({
+  productId,
+  onUpdate,
+  reload,
+}) => {
   const { user } = AuthConsumer();
 
   const [stars, setStars] = useState(0);
   const [isReviewed, setIsReviewed] = useState(false);
   const [userReview, setUserReview] = useState<Review | undefined>(undefined);
 
-  const getUserReview = useCallback(async () => {
+  async function getUserReview() {
     if (!user) {
       setIsReviewed(() => false);
       return;
@@ -40,7 +45,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
         _userReviews.reduce((acc, rev) => acc + rev.stars, 0) /
           _userReviews.length || 0
     );
-  }, [user, productId]);
+  }
 
   async function createOrUpdateReview() {
     let result;
@@ -71,7 +76,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
 
   useEffect(() => {
     getUserReview();
-  }, [getUserReview, isReviewed]);
+  }, [user, productId, isReviewed, reload]);
 
   // getting all the reviews
   const [userReviews, setUserReviews] = useState<Review[]>([]);
