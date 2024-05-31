@@ -1,24 +1,48 @@
 import { Button, Row, Col, Form } from "react-bootstrap";
 import useForm from "../utils/useForm";
 import { validateReview } from "../utils/review";
-import { createReview } from "../service/review";
+import { createReview, getProductReviews } from "../service/review";
 import { AuthConsumer } from "./AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function ReviewsForm({ productId }: { productId: number }) {
   const { user } = AuthConsumer();
 
-  const { values, handleChangeValues, handleSubmit, errors } = useForm(
-    async () => {
+  const [isReviewed, setIsReviewed] = useState(false);
+
+  async function getUserReview() {
+    if (!user) {
+      setIsReviewed(() => false);
+      return;
+    }
+    const userReview = await getProductReviews(productId, user?.user_id);
+    setIsReviewed(() => userReview.length > 0);
+  }
+
+  useEffect(() => {
+    getUserReview();
+  }, [user, productId, isReviewed]);
+
+  const createUserReview = async () => {
+    if (
       await createReview(
         user!.user_id,
         productId,
         values.title,
         values.description,
         Number(values.stars)
-      );
-    },
+      )
+    ) {
+      toast.success("Review written!");
+      setShowForm(false);
+    } else {
+      toast.warning("Internal server error!");
+    }
+  };
+
+  const { values, handleChangeValues, handleSubmit, errors } = useForm(
+    createUserReview,
     validateReview
   );
 
@@ -45,7 +69,15 @@ function ReviewsForm({ productId }: { productId: number }) {
         <Col>
           <h4>Review the product</h4>
           <p>Share your thoughts with other customers!</p>
-          <Button onClick={() => _setShowForm()}>Write a review</Button>
+
+          {isReviewed ? (
+            <>
+              <Button onClick={() => _setShowForm()}>Edit</Button>
+              <Button onClick={() => _setShowForm()}>Delete</Button>
+            </>
+          ) : (
+            <Button onClick={() => _setShowForm()}>Write a review</Button>
+          )}
         </Col>
       </Row>
       {showForm && (
