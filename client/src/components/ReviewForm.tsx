@@ -12,7 +12,12 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 
-function ReviewsForm({ productId }: { productId: number }) {
+interface ReviewsFormProps {
+  productId: number;
+  onUpdate: () => void;
+}
+
+const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
   const { user } = AuthConsumer();
 
   const [stars, setStars] = useState(0);
@@ -26,9 +31,7 @@ function ReviewsForm({ productId }: { productId: number }) {
     }
     const _userReview = await getProductReviews(productId, user?.user_id);
     setIsReviewed(() => _userReview.length > 0);
-    setUserReview(() =>
-      _userReview.length > 0 ? _userReview.at(0) : undefined
-    );
+    setUserReview(() => (_userReview.length > 0 ? _userReview[0] : undefined));
 
     const _userReviews = await getProductReviews(productId);
     setStars(
@@ -40,21 +43,30 @@ function ReviewsForm({ productId }: { productId: number }) {
   }
 
   async function createOrUpdateReview() {
-    if (isReviewed)
-      return await updateReview(
+    let result;
+    if (isReviewed) {
+      result = await updateReview(
         user!.user_id,
         productId,
         values.title,
         values.description,
         Number(values.stars)
       );
-    return await createReview(
-      user!.user_id,
-      productId,
-      values.title,
-      values.description,
-      Number(values.stars)
-    );
+    } else {
+      result = await createReview(
+        user!.user_id,
+        productId,
+        values.title,
+        values.description,
+        Number(values.stars)
+      );
+    }
+
+    if (result) {
+      onUpdate(); // call the onUpdate function
+      return true;
+    }
+    return false;
   }
 
   useEffect(() => {
@@ -193,6 +205,6 @@ function ReviewsForm({ productId }: { productId: number }) {
       )}
     </>
   );
-}
+};
 
 export default ReviewsForm;
