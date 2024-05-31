@@ -211,6 +211,7 @@ export default function ReviewsForm({
               value={setInputValue("title")}
               onChange={handleChangeValues}
               placeholder="Enter title"
+              style={{ backgroundColor: "#e3f2e9" }}
             />
             <Form.Text className="text-danger">{errors.title || ""}</Form.Text>
           </Form.Group>
@@ -224,6 +225,7 @@ export default function ReviewsForm({
               value={setInputValue("description")}
               onChange={handleChangeValues}
               placeholder="Enter description"
+              style={{ backgroundColor: "#e3f2e9" }}
             />
             <Form.Text className="text-danger">
               {errors.description || ""}
