@@ -110,6 +110,7 @@ export default function ReviewsForm({
     if (await createOrUpdateReview()) {
       toast.success("Review written!");
       handleUpdate();
+      setRating(0);
       setShowForm(() => false);
       Object.keys(values).forEach((key) => {
         delete values[key];
