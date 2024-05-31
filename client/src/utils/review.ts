@@ -13,8 +13,8 @@ function validateTitle(title: string) {
 }
 
 function validateDescription(description: string) {
+  if (!description || !description.trim()) return "Enter a review description!";
   const descriptionTrimmed = description.trim();
-  if (!description || !descriptionTrimmed) return "Enter a review description!";
 
   const wordCount = description.trim().split(" ").length;
   if (descriptionTrimmed.length < 5)
