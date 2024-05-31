@@ -16,7 +16,7 @@ import {
 } from "../service/cart";
 
 import { AuthConsumer } from "./AuthContext";
-import { CartItem } from "../utils/cart";
+import { CartItem } from "../service/cart";
 
 type CartContextProps = {
   cartId: number | undefined;
