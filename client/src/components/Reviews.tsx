@@ -7,6 +7,7 @@ import { Card, Button, Modal } from "react-bootstrap";
 interface ReviewsProps {
   productId: number;
   reload: boolean;
+  handleUpdate: () => void;
 }
 
 const trash = (
@@ -27,7 +28,7 @@ const trash = (
   </svg>
 );
 
-function Reviews({ productId, reload }: ReviewsProps) {
+function Reviews({ productId, reload, handleUpdate }: ReviewsProps) {
   const { user } = AuthConsumer();
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
@@ -98,6 +99,7 @@ function Reviews({ productId, reload }: ReviewsProps) {
                         handleClose();
                         await deleteReview(productId, user.user_id);
                         setReloadAfterDelete(!reloadAfterDelete);
+                        handleUpdate();
                       }}
                     >
                       Yes
