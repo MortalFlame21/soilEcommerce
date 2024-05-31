@@ -1,17 +1,30 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, where } = require("sequelize");
 const db = require("../database");
 const { validateUserID } = require("../utils/users");
 const validate = require("validator");
 
 // Get all reviews for the single product
 exports.getSingleProduct = async (req, res) => {
-  const { product_id } = req.query;
+  const { product_id, user_id } = req.query;
 
   try {
+    const whereQuery = {
+      product_id: product_id,
+    };
+
+    if (user_id) {
+      const idInvalid = await validateUserID(user_id);
+      if (idInvalid) {
+        res.status(500).json({ message: idInvalid });
+        return;
+      }
+      // add to query
+      whereQuery.user_id = user_id;
+    }
+
+    console.log(whereQuery);
     const productReviews = await db.review.findAll({
-      where: {
-        product_id: product_id,
-      },
+      where: whereQuery,
     });
     // a non existent product_id will return []
     res.status(200).json(productReviews);
