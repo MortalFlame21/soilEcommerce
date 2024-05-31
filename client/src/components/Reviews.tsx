@@ -2,11 +2,9 @@ import StarRating from "./StarRating";
 
 function Reviews() {
   return (
-    <>
-      <div>
-        <StarRating rating={4} />
-      </div>
-    </>
+    <div className="rounded-1" style={{ backgroundColor: "#cde9d7" }}>
+      <StarRating rating={4} />
+    </div>
   );
 }
 
