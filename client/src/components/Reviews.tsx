@@ -20,7 +20,7 @@ function Reviews({ productId }: ReviewsProps) {
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    getProductReviews(productId).then((reviews) => {
+    getProductReviews(productId, undefined).then((reviews) => {
       setUserReviews(reviews);
     });
   }, [productId]);

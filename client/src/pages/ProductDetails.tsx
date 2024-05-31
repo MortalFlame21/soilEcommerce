@@ -16,6 +16,7 @@ import { checkProductInCart } from "../service/cart";
 import { CartConsumer } from "../components/CartContext";
 import ReviewsForm from "../components/ReviewForm";
 import Reviews from "../components/Reviews";
+import { getProductReviews } from "../service/review";
 
 function ProductDetails() {
   const productID = Number(useParams().id);
@@ -60,6 +61,17 @@ function ProductDetails() {
       setProduct(res);
       setIsLoading(false);
     });
+  }, [productID]);
+
+  // useEffect for checking if product has reviews
+  const [hasReviews, setHasReviews] = useState(false);
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const reviews = await getProductReviews(productID, undefined);
+      if (reviews.length > 0) setHasReviews(true);
+    };
+
+    fetchReviews();
   }, [productID]);
 
   if (isLoading) {
@@ -237,7 +249,7 @@ function ProductDetails() {
         <h3>Reviews</h3>
         <Col>
           <ReviewsForm productId={productID} />
-          <Reviews productId={productID} />
+          {hasReviews && <Reviews productId={productID} />}
         </Col>
       </Row>
     </Container>
