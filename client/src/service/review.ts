@@ -9,6 +9,9 @@ export type Review = {
   user_id: number;
   product_id: number;
   review_created: string;
+  User: {
+    username: string;
+  };
 };
 
 export async function getProductReviews(

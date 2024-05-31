@@ -1,23 +1,8 @@
 import StarRating from "./StarRating";
-import { getProductReviews } from "../service/review";
+import { getProductReviews, Review } from "../service/review";
 import { useEffect, useState } from "react";
 import { AuthConsumer } from "./AuthContext";
 import { Card, Button } from "react-bootstrap";
-
-interface User {
-  username: string;
-}
-
-interface Review {
-  id: number;
-  stars: number;
-  title: string;
-  description: string;
-  user_id: number;
-  product_id: number;
-  review_created: string;
-  User: User;
-}
 
 interface ReviewsProps {
   productId: number;
