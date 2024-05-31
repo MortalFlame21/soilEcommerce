@@ -18,11 +18,11 @@ interface ReviewsFormProps {
   reload: boolean;
 }
 
-const ReviewsForm: React.FC<ReviewsFormProps> = ({
+export default function ReviewsForm({
   productId,
   onUpdate,
   reload,
-}) => {
+}: ReviewsFormProps) {
   const { user } = AuthConsumer();
 
   const [stars, setStars] = useState(0);
@@ -90,7 +90,13 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({
   const createUserReview = async () => {
     if (await createOrUpdateReview()) {
       toast.success("Review written!");
-      setShowForm(false);
+      setShowForm(() => false);
+      Object.keys(values).forEach((key) => {
+        delete values[key];
+      });
+      Object.keys(errors).forEach((key) => {
+        delete errors[key];
+      });
     } else {
       toast.warning("Internal server error!");
     }
@@ -223,6 +229,4 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({
       )}
     </>
   );
-};
-
-export default ReviewsForm;
+}

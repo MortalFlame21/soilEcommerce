@@ -97,7 +97,7 @@ function Reviews({ productId, reload, handleUpdate }: ReviewsProps) {
                       variant="danger"
                       onClick={async () => {
                         handleClose();
-                        await deleteReview(productId, user.user_id);
+                        await deleteReview(user.user_id, productId);
                         setReloadAfterDelete(!reloadAfterDelete);
                         handleUpdate();
                       }}
