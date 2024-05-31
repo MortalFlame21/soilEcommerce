@@ -1,8 +1,8 @@
 import StarRating from "./StarRating";
-import { getProductReviews, Review } from "../service/review";
+import { getProductReviews, Review, deleteReview } from "../service/review";
 import { useEffect, useState } from "react";
 import { AuthConsumer } from "./AuthContext";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Modal } from "react-bootstrap";
 
 interface ReviewsProps {
   productId: number;
@@ -31,11 +31,22 @@ function Reviews({ productId, reload }: ReviewsProps) {
   const { user } = AuthConsumer();
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [reloadAfterDelete, setReloadAfterDelete] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowModal(true);
+  };
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
+
   useEffect(() => {
     getProductReviews(productId, undefined).then((reviews) => {
       setUserReviews(reviews);
     });
-  }, [productId, reload]);
+  }, [productId, reload, reloadAfterDelete]);
 
   function ReviewCards({ review }: { review: Review }) {
     return (
@@ -61,9 +72,39 @@ function Reviews({ productId, reload }: ReviewsProps) {
               </Card.Text>
             </div>
             {user?.user_id === review.user_id && (
-              <Button variant="" className="p-0 align-self-end">
-                {trash}
-              </Button>
+              <>
+                <Button
+                  variant=""
+                  className="p-0 align-self-end"
+                  onClick={handleButtonClick}
+                >
+                  {trash}
+                </Button>
+
+                <Modal show={showModal} onHide={handleClose}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Delete Review</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Are you sure you want to delete your review?
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      No
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={async () => {
+                        handleClose();
+                        await deleteReview(productId, user.user_id);
+                        setReloadAfterDelete(!reloadAfterDelete);
+                      }}
+                    >
+                      Yes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </>
             )}
           </div>
         </Card.Body>

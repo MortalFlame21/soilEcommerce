@@ -8,7 +8,7 @@ import {
   Review,
 } from "../service/review";
 import { AuthConsumer } from "./AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import StarRating from "./StarRating";
 
@@ -24,7 +24,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
   const [isReviewed, setIsReviewed] = useState(false);
   const [userReview, setUserReview] = useState<Review | undefined>(undefined);
 
-  async function getUserReview() {
+  const getUserReview = useCallback(async () => {
     if (!user) {
       setIsReviewed(() => false);
       return;
@@ -40,7 +40,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
         _userReviews.reduce((acc, rev) => acc + rev.stars, 0) /
           _userReviews.length || 0
     );
-  }
+  }, [user, productId]);
 
   async function createOrUpdateReview() {
     let result;
@@ -71,7 +71,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
 
   useEffect(() => {
     getUserReview();
-  }, [user, productId, isReviewed]);
+  }, [getUserReview, isReviewed]);
 
   // getting all the reviews
   const [userReviews, setUserReviews] = useState<Review[]>([]);
@@ -80,7 +80,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
     getProductReviews(productId, undefined).then((reviews) => {
       setUserReviews(reviews);
     });
-  }, [productId, onUpdate]);
+  }, [productId, onUpdate, isReviewed]);
 
   const createUserReview = async () => {
     if (await createOrUpdateReview()) {
@@ -131,7 +131,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
 
           <div className="d-flex gap-1">
             <Button variant="success" onClick={() => _setShowForm()}>
-              {isReviewed ? "Edit" : "Write a review"}
+              {isReviewed ? "Edit your review" : "Write a review"}
             </Button>
           </div>
         </Col>
