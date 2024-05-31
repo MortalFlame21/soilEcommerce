@@ -187,6 +187,10 @@ export default function ReviewsForm({
                       values.stars = value.toString();
                       setRating(value);
                     }}
+                    onChange={() => {
+                      values.stars = value.toString();
+                      setRating(value);
+                    }}
                     aria-label={`Rate ${value} out of 5`}
                     className="d-none"
                   />
