@@ -6,6 +6,7 @@ import { Card, Button } from "react-bootstrap";
 
 interface ReviewsProps {
   productId: number;
+  reload: boolean;
 }
 
 const trash = (
@@ -26,7 +27,7 @@ const trash = (
   </svg>
 );
 
-function Reviews({ productId }: ReviewsProps) {
+function Reviews({ productId, reload }: ReviewsProps) {
   const { user } = AuthConsumer();
   const [userReviews, setUserReviews] = useState<Review[]>([]);
 
@@ -34,7 +35,7 @@ function Reviews({ productId }: ReviewsProps) {
     getProductReviews(productId, undefined).then((reviews) => {
       setUserReviews(reviews);
     });
-  }, [productId]);
+  }, [productId, reload]);
 
   function ReviewCards({ review }: { review: Review }) {
     return (
