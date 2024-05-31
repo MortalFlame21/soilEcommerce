@@ -1,7 +1,12 @@
 import { Button, Row, Col, Form } from "react-bootstrap";
 import useForm from "../utils/useForm";
 import { validateReview } from "../utils/review";
-import { createReview, getProductReviews } from "../service/review";
+import {
+  createReview,
+  updateReview,
+  getProductReviews,
+  Review,
+} from "../service/review";
 import { AuthConsumer } from "./AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,6 +15,7 @@ function ReviewsForm({ productId }: { productId: number }) {
   const { user } = AuthConsumer();
 
   const [isReviewed, setIsReviewed] = useState(false);
+  const [userReview, setUserReview] = useState<Review | undefined>(undefined);
 
   async function getUserReview() {
     if (!user) {
@@ -18,6 +24,25 @@ function ReviewsForm({ productId }: { productId: number }) {
     }
     const userReview = await getProductReviews(productId, user?.user_id);
     setIsReviewed(() => userReview.length > 0);
+    setUserReview(() => (userReview.length > 0 ? userReview.at(0) : undefined));
+  }
+
+  async function createOrUpdateReview() {
+    if (isReviewed)
+      return await updateReview(
+        user!.user_id,
+        productId,
+        values.title,
+        values.description,
+        Number(values.stars)
+      );
+    return await createReview(
+      user!.user_id,
+      productId,
+      values.title,
+      values.description,
+      Number(values.stars)
+    );
   }
 
   useEffect(() => {
@@ -25,15 +50,7 @@ function ReviewsForm({ productId }: { productId: number }) {
   }, [user, productId, isReviewed]);
 
   const createUserReview = async () => {
-    if (
-      await createReview(
-        user!.user_id,
-        productId,
-        values.title,
-        values.description,
-        Number(values.stars)
-      )
-    ) {
+    if (await createOrUpdateReview()) {
       toast.success("Review written!");
       setShowForm(false);
     } else {
@@ -54,6 +71,12 @@ function ReviewsForm({ productId }: { productId: number }) {
       return;
     }
     setShowForm(() => !showForm);
+  };
+
+  const setInputValue = (i: "title" | "description") => {
+    if (!userReview) return values[i];
+    return (values[i] =
+      values[i] || values[i] == "" ? values[i] : userReview[i]);
   };
 
   return (
@@ -118,7 +141,7 @@ function ReviewsForm({ productId }: { productId: number }) {
             <Form.Check
               type="radio"
               label="5"
-              value="5"
+              value={5}
               name="stars"
               onChange={handleChangeValues}
             />
@@ -129,7 +152,7 @@ function ReviewsForm({ productId }: { productId: number }) {
             <Form.Label>Title</Form.Label>
             <Form.Control
               name="title"
-              value={values.title || ""}
+              value={setInputValue("title")}
               onChange={handleChangeValues}
               placeholder="Enter title"
             />
@@ -142,7 +165,7 @@ function ReviewsForm({ productId }: { productId: number }) {
               name="description"
               as="textarea"
               rows={5}
-              value={values.description || ""}
+              value={setInputValue("description")}
               onChange={handleChangeValues}
               placeholder="Enter description"
             />
