@@ -1,6 +1,4 @@
 import { Offcanvas } from "react-bootstrap";
-import { AuthConsumer } from "./AuthContext";
-
 import { Button } from "react-bootstrap";
 import { CartConsumer } from "./CartContext";
 import CartItems from "./CartItems";
@@ -9,7 +7,6 @@ import { getCartTotal } from "../service/cart";
 
 function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
   const nav = useNavigate();
-  const { user } = AuthConsumer();
   const { userCart, emptyUserCart } = CartConsumer();
 
   return (
@@ -20,8 +17,16 @@ function Cart({ toggleShowCart }: { toggleShowCart: () => void }) {
       <Offcanvas.Body>
         {userCart.length === 0 ? (
           <>
-            <p className="fs-5">Your cart is currently empty &#128557;</p>
-            {!user && <p className="fs-5">Login to add items!</p>}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+              }}
+            >
+              <p className="fs-5">Your cart is currently empty &#128557;</p>
+            </div>
           </>
         ) : (
           <CartItems />
