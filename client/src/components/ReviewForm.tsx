@@ -14,20 +14,19 @@ import StarRating from "./StarRating";
 
 interface ReviewsFormProps {
   productId: number;
-  onUpdate: () => void;
-  reload: boolean;
+  handleUpdate: () => void;
 }
 
 export default function ReviewsForm({
   productId,
-  onUpdate,
-  reload,
+  handleUpdate,
 }: ReviewsFormProps) {
   const { user } = AuthConsumer();
 
   const [stars, setStars] = useState(0);
   const [isReviewed, setIsReviewed] = useState(false);
   const [userReview, setUserReview] = useState<Review | undefined>(undefined);
+  const [userReviews, setUserReviews] = useState<Review[]>([]);
 
   async function getUserReview() {
     if (!user) {
@@ -45,51 +44,36 @@ export default function ReviewsForm({
         _userReviews.reduce((acc, rev) => acc + rev.stars, 0) /
           _userReviews.length || 0
     );
+
+    setUserReviews([..._userReviews]);
   }
 
   async function createOrUpdateReview() {
-    let result;
-    if (isReviewed) {
-      result = await updateReview(
-        user!.user_id,
-        productId,
-        values.title,
-        values.description,
-        Number(values.stars)
-      );
-    } else {
-      result = await createReview(
-        user!.user_id,
-        productId,
-        values.title,
-        values.description,
-        Number(values.stars)
-      );
-    }
-
-    if (result) {
-      onUpdate(); // call the onUpdate function
-      return true;
-    }
-    return false;
+    return isReviewed
+      ? await updateReview(
+          user!.user_id,
+          productId,
+          values.title,
+          values.description,
+          Number(values.stars)
+        )
+      : await createReview(
+          user!.user_id,
+          productId,
+          values.title,
+          values.description,
+          Number(values.stars)
+        );
   }
 
   useEffect(() => {
     getUserReview();
-  }, [user, productId, isReviewed, reload]);
-
-  // getting all the reviews
-  const [userReviews, setUserReviews] = useState<Review[]>([]);
-
-  useEffect(() => {
-    getProductReviews(productId, undefined).then((reviews) => {
-      setUserReviews(reviews);
-    });
-  }, [productId, onUpdate, isReviewed]);
+  }, [productId, handleUpdate, isReviewed]);
 
   const createUserReview = async () => {
     if (await createOrUpdateReview()) {
       toast.success("Review written!");
+      handleUpdate();
       setShowForm(() => false);
       Object.keys(values).forEach((key) => {
         delete values[key];

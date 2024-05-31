@@ -22,16 +22,12 @@ function ReviewContainer({ productID }: ReviewContainerProps) {
   const [reload, setReload] = useState(false);
 
   const handleUpdate = () => {
-    setReload(!reload);
+    setReload(() => !reload);
   };
 
   return (
     <>
-      <ReviewsForm
-        productId={productID}
-        reload={reload}
-        onUpdate={handleUpdate}
-      />
+      <ReviewsForm productId={productID} handleUpdate={handleUpdate} />
       {hasReviews && (
         <Reviews
           productId={productID}
