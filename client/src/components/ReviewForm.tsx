@@ -82,6 +82,8 @@ export default function ReviewsForm({
     setUserReviews([..._userReviews]);
   }
 
+  const [rating, setRating] = useState(0);
+
   async function createOrUpdateReview() {
     return isReviewed
       ? await updateReview(
@@ -141,8 +143,6 @@ export default function ReviewsForm({
       values[i] || values[i] == "" ? values[i] : userReview[i]);
   };
 
-  const [rating, setRating] = useState(0);
-
   return (
     <>
       <Row className="mb-4">
@@ -174,16 +174,28 @@ export default function ReviewsForm({
         >
           <Form.Group className="mb-3">
             <Form.Label className="p-0 m-0">Stars</Form.Label>
-            {[1, 2, 3, 4, 5].map((value) => (
-              <Button
-                key={value}
-                onClick={() => setRating(value)}
-                aria-label={`Rate ${value} out of 5`}
-                variant=""
-              >
-                {value <= rating ? solid : outline}
-              </Button>
-            ))}
+            <div className="d-flex">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <div key={value}>
+                  <Form.Check
+                    type="radio"
+                    id={`radio${value}`}
+                    name="stars"
+                    value={value}
+                    checked={rating === value}
+                    onClick={() => {
+                      values.stars = value.toString();
+                      setRating(value);
+                    }}
+                    aria-label={`Rate ${value} out of 5`}
+                    className="d-none"
+                  />
+                  <label htmlFor={`radio${value}`}>
+                    {value <= rating ? solid : outline}
+                  </label>
+                </div>
+              ))}
+            </div>
             <Form.Text className="text-danger">{errors.stars || ""}</Form.Text>
           </Form.Group>
 
