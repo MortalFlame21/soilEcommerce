@@ -228,13 +228,14 @@ function ProductDetails() {
 
       <Col className="mb-5">
         <div className="pt-4 mw500">
-          <h4 className="">Product details</h4>
+          <h3 className="">Product details</h3>
           <p>{product.description}</p>
         </div>
       </Col>
 
       <Row>
-        <Col xs={12} md={6}>
+        <h3>Reviews</h3>
+        <Col>
           <ReviewsForm productId={productID} />
           <Reviews />
         </Col>
