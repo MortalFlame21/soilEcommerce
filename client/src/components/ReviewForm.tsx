@@ -73,6 +73,15 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
     getUserReview();
   }, [user, productId, isReviewed]);
 
+  // getting all the reviews
+  const [userReviews, setUserReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    getProductReviews(productId, undefined).then((reviews) => {
+      setUserReviews(reviews);
+    });
+  }, [productId, onUpdate]);
+
   const createUserReview = async () => {
     if (await createOrUpdateReview()) {
       toast.success("Review written!");
@@ -106,11 +115,15 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
   return (
     <>
       <Row className="mb-4">
+        <h3>Reviews</h3>
         <Col>
-          <h3>Reviews</h3>
-          <h4>Stars</h4>
-          <h5>{stars}/5</h5>
-          <StarRating rating={stars} />
+          <div className="text-center">
+            <h4>{stars}/5</h4>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <StarRating rating={stars} />
+              <p className="m-0 mx-1"> ({userReviews.length})</p>
+            </div>
+          </div>
         </Col>
         <Col>
           <h4>Review the product</h4>
@@ -126,7 +139,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({ productId, onUpdate }) => {
       {showForm && (
         <Form
           onSubmit={handleSubmit}
-          className="p-5 custom-bg-secondary rounded-3"
+          className="p-5 custom-bg-secondary rounded-3 mb-4"
         >
           <Form.Group className="mb-3">
             <Form.Label>Stars</Form.Label>

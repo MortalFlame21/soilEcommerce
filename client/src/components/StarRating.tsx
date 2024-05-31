@@ -45,7 +45,11 @@ const StarRating: React.FC<StarRatingProps> = ({ rating }) => {
   return (
     <Row className="align-items-center px-2">
       {[...Array(totalStars)].map((_, index) => (
-        <Col xs="auto" key={index} className="p-0 mx-1">
+        <Col
+          xs="auto"
+          key={index}
+          className="d-flex align-items-center p-0 mx-1"
+        >
           {index < rating ? solid : outline}
         </Col>
       ))}

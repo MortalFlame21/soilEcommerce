@@ -50,9 +50,7 @@ function Reviews({ productId, reload }: ReviewsProps) {
               <Card.Title className="pt-1">
                 <h4>{review.title}</h4>
               </Card.Title>
-              <Card.Text>
-                <p>{review.description}</p>
-              </Card.Text>
+              <Card.Text>{review.description}</Card.Text>
               <Card.Text>
                 {review.User.username},{" "}
                 {new Date(review.review_created).toLocaleDateString("en-US", {

@@ -233,7 +233,6 @@ function ProductDetails() {
       </Col>
 
       <Row>
-        <h3>Reviews</h3>
         <Col>
           <ReviewContainer productID={productID} />
         </Col>
