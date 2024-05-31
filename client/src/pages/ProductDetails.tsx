@@ -237,7 +237,7 @@ function ProductDetails() {
         <h3>Reviews</h3>
         <Col>
           <ReviewsForm productId={productID} />
-          <Reviews />
+          <Reviews productId={productID} />
         </Col>
       </Row>
     </Container>
