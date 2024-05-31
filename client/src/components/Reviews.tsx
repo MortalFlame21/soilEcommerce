@@ -2,6 +2,10 @@ import StarRating from "./StarRating";
 import { getProductReviews } from "../service/review";
 import { useEffect, useState } from "react";
 
+interface User {
+  username: string;
+}
+
 interface Review {
   id: number;
   stars: number;
@@ -10,6 +14,7 @@ interface Review {
   user_id: number;
   product_id: number;
   review_created: string;
+  User: User;
 }
 
 interface ReviewsProps {
@@ -33,6 +38,14 @@ function Reviews({ productId }: ReviewsProps) {
           <div>
             <h5>{review.title}</h5>
             <p>{review.description}</p>
+            <p>
+              {review.User.username},{" "}
+              {new Date(review.review_created).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
           </div>
         </div>
       </div>

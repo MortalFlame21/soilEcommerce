@@ -23,6 +23,11 @@ exports.getSingleProduct = async (req, res) => {
     }
     const productReviews = await db.review.findAll({
       where: whereQuery,
+      include: [{
+        model: db.users,
+        as: 'User',
+        attributes: ['username'],
+      }],
     });
     // a non existent product_id will return []
     res.status(200).json(productReviews);
