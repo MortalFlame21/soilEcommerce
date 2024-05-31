@@ -3,7 +3,7 @@ module.exports = (express, app) => {
   const router = express.Router();
 
   // Get all reviews for the single product
-  // format ?=product_id="data"
+  // format ?=product_id="data"&user_id="data"
   router.get("/", controller.getSingleProduct);
 
   // Create a new review
