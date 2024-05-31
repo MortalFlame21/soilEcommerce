@@ -21,8 +21,6 @@ exports.getSingleProduct = async (req, res) => {
       // add to query
       whereQuery.user_id = user_id;
     }
-
-    console.log(whereQuery);
     const productReviews = await db.review.findAll({
       where: whereQuery,
     });

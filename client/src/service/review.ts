@@ -1,9 +1,16 @@
 import axios from "axios";
 import config from "./config";
 
-export async function getProductReviews(id: number) {
+export async function getProductReviews(
+  product_id: number,
+  user_id: number | undefined
+) {
   try {
-    const res = await axios.get(`${config.HOST}/reviews/?product_id=${id}`);
+    const res = await axios.get(
+      `${config.HOST}/reviews/?product_id=${product_id}&user_id=${
+        user_id || ""
+      }`
+    );
     return res.data;
   } catch {
     return [];
@@ -25,9 +32,8 @@ export async function createReview(
       description: description,
       stars: stars,
     });
-    console.log(res.data);
     return res.data;
-  } catch {
+  } catch (e) {
     return [];
   }
 }
