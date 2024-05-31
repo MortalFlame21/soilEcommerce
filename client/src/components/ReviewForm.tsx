@@ -76,7 +76,7 @@ const ReviewsForm: React.FC<ReviewsFormProps> = ({
 
   useEffect(() => {
     getUserReview();
-  }, [user, productId, isReviewed, reload, getUserReview]);
+  }, [user, productId, isReviewed, reload]);
 
   // getting all the reviews
   const [userReviews, setUserReviews] = useState<Review[]>([]);
