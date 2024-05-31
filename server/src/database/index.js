@@ -46,7 +46,7 @@ db.cart.belongsToMany(db.product, {
 
 // 1:N relationship, user can review many products
 db.users.hasMany(db.review, { foreignKey: "user_id", as: "Reviews" });
-db.review.belongsTo(db.users, { foreignKey: "user_id" });
+db.review.belongsTo(db.users, { foreignKey: "user_id", as: "User" });
 
 // review references a single product, product can be reviewed many times
 db.review.belongsTo(db.product, { foreignKey: "product_id" });
