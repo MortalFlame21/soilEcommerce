@@ -22,6 +22,7 @@ db.cart_products = require("./models/cart_products.js")(
   DataTypes
 );
 db.review = require("./models/review.js")(db.sequelize, DataTypes);
+db.admin = require("./models/admin.js")(db.sequelize, DataTypes);
 
 // set up the relationships
 //
@@ -51,6 +52,12 @@ db.review.belongsTo(db.users, { foreignKey: "user_id", as: "User" });
 // review references a single product, product can be reviewed many times
 db.review.belongsTo(db.product, { foreignKey: "product_id" });
 db.product.hasMany(db.review, { foreignKey: "product_id" });
+
+// admin
+// 1:1 relationship, user has 1 user_id
+db.admin.hasOne(db.users, { foreignKey: "user_id" });
+// 0:1 relationship, user can have 0 or 1 admin
+db.users.belongsTo(db.admin, { foreignKey: "user_id" });
 
 db.sync = async () => {
   // Sync schema
