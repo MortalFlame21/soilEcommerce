@@ -183,7 +183,7 @@ exports.emptyCart = async (req, res) => {
       },
     });
 
-    res.json({ message: "Cart emptied" });
+    res.status(200).json({ message: "Cart emptied" });
   } catch (error) {
     console.error(error);
     res

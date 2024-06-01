@@ -2,6 +2,7 @@ const db = require("../database");
 const {
   createOrFindCart,
   addItemToCart,
+  emptyCart,
 } = require("../controllers/cart.controller");
 
 // don't query the db during unit tests, we'll refer to the mock cart table below
@@ -72,6 +73,24 @@ const mockRequestBodyProducts = [
   },
 ];
 
+const mockRequestQueryProduct = [
+  // Logged user emptys cart
+  {
+    cart_id: 19,
+    user_id: 2,
+  },
+  // Non-logged user emptys cart
+  {
+    cart_id: 19,
+    user_id: null,
+  },
+  // Invalid query
+  {
+    cart_id: null,
+    user_id: "",
+  },
+];
+
 module.exports = () => {
   describe("Test 'carts/' route", () => {
     let mockRequest, mockResponse;
@@ -79,6 +98,7 @@ module.exports = () => {
     beforeEach(() => {
       mockRequest = {
         body: {},
+        query: {},
       };
 
       mockResponse = {
@@ -202,8 +222,60 @@ module.exports = () => {
       });
     });
 
-    describe("3. Delete a product from a shopping cart, test DELETE method", () => {
-      test.todo("todo");
+    describe("3. Empty the shopping cart, test DELETE method", () => {
+      test("Empty the logged in user cart", async () => {
+        // fake query req
+        mockRequest.query = mockRequestQueryProduct.at(0);
+
+        // fake returns
+        db.cart_products.destroy(() => {});
+        await emptyCart(mockRequest, mockResponse);
+
+        expect(mockResponse.status).toHaveBeenCalledTimes(1);
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+
+        expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          message: "Cart emptied",
+        });
+      });
+
+      test("Empty the not logged in user cart", async () => {
+        // fake query req
+        mockRequest.query = mockRequestQueryProduct.at(1);
+
+        // fake return
+        db.cart.destroy(() => {});
+        db.cart_products.destroy(() => {});
+        await emptyCart(mockRequest, mockResponse);
+
+        expect(mockResponse.status).toHaveBeenCalledTimes(1);
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+
+        expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          message: "Cart emptied",
+        });
+      });
+
+      test("Empty the non existing cart with invalid query", async () => {
+        // fake query req
+        mockRequest.query = mockRequestQueryProduct.at(2);
+
+        // fake return
+        db.cart.destroy(() => {});
+        db.cart_products.destroy(() => {});
+
+        await emptyCart(mockRequest, mockResponse);
+
+        expect(mockResponse.status).toHaveBeenCalledTimes(1);
+        expect(mockResponse.status).toHaveBeenCalledWith(200);
+
+        expect(mockResponse.json).toHaveBeenCalledTimes(1); // invalid requst query will not cause an error
+        expect(mockResponse.json).toHaveBeenCalledWith({
+          message: "Cart emptied",
+        });
+      });
     });
   });
 };
