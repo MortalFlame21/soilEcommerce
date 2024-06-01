@@ -67,7 +67,7 @@ exports.addItemToCart = async (req, res) => {
       await item.save();
     }
 
-    res.json(item);
+    res.status(200).json(item);
   } catch (error) {
     console.error(error);
     res
