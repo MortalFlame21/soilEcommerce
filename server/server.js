@@ -3,7 +3,7 @@ const cors = require("cors");
 const db = require("./src/database");
 
 const graphql = require("./src/graphql");
-const { createHandler } = require("graphql-http/lib/use/express");
+const { graphqlHTTP } = require("express-graphql");
 
 const app = express();
 
@@ -15,10 +15,10 @@ db.sync({ logging: console.log });
 
 app.use(
   "/graphql",
-  createHandler({
+  graphqlHTTP({
     schema: graphql.schema,
     rootValue: graphql.root,
-    graphql: true,
+    graphiql: true,
   })
 );
 
