@@ -44,6 +44,9 @@ graphql.schema = buildSchema(`
     type Query {
         all_reviews: [Review]
         latest_reviews: [Review]
+        numUsers: Int
+        numProducts: Int
+        numReviews: Int
     }
 `);
 
@@ -77,6 +80,18 @@ graphql.root = {
             ...review.get(),
             username: review.User.username
         }));
+    },
+    numUsers: async () => {
+        const numUsers = await db.users.count();
+        return numUsers;
+    },
+    numProducts: async () => {
+        const numProducts = await db.product.count();
+        return numProducts;
+    },
+    numReviews: async () => {
+        const numReviews = await db.review.count();
+        return numReviews;
     },
     addAdmin: async () => { },
     blockUser: async () => { },
