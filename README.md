@@ -34,7 +34,11 @@ PORT = 3306
 
 ## GitHub Link
 
-[Project Repository](https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a2)
+[Project Repository (click here)](https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a2)
+
+## ERD
+
+![ERD](./server/ERD%20-%20FSD%20A2.drawio.png)
 
 ## Dependencies
 
