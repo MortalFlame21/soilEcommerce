@@ -106,6 +106,7 @@ export default function ReviewsForm({
 
   useEffect(() => {
     getUserReview();
+    // eslint-disable-next-line
   }, [productId, handleUpdate, isReviewed]);
 
   const createUserReview = async () => {
