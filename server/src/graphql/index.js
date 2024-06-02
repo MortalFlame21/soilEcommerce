@@ -43,6 +43,7 @@ graphql.schema = buildSchema(`
 
     type Query {
         all_reviews: [Review]
+        latest_reviews: [Review]
     }
 `);
 
@@ -54,6 +55,22 @@ graphql.root = {
                 as: 'User',
                 attributes: ['username']
             }]
+        });
+
+        return reviews.map(review => ({
+            ...review.get(),
+            username: review.User.username
+        }));
+    },
+    latest_reviews: async () => {
+        const reviews = await db.review.findAll({
+            include: [{
+                model: db.users,
+                as: 'User',
+                attributes: ['username']
+            }],
+            order: [['review_created', 'DESC']],
+            limit: 2
         });
 
         return reviews.map(review => ({
