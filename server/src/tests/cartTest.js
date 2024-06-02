@@ -113,7 +113,7 @@ module.exports = () => {
         mockRequest.body = mockRequestBodyCarts.at(0);
 
         // fake return
-        db.cart.create.mockImplementationOnce(() => {
+        db.cart.create.mockImplementation(() => {
           return mockCartTable.at(0);
         });
         await createOrFindCart(mockRequest, mockResponse);
@@ -130,7 +130,7 @@ module.exports = () => {
         mockRequest.body = mockRequestBodyCarts.at(1);
 
         // fake return
-        db.cart.create.mockImplementationOnce(() => {
+        db.cart.create.mockImplementation(() => {
           return mockCartTable.at(1);
         });
         await createOrFindCart(mockRequest, mockResponse);
@@ -147,7 +147,7 @@ module.exports = () => {
         mockRequest.body = mockRequestBodyCarts.at(2);
 
         // fake return
-        db.users.findOne.mockImplementationOnce(() => {
+        db.users.findOne.mockImplementation(() => {
           return null;
         });
         await createOrFindCart(mockRequest, mockResponse);
@@ -168,7 +168,7 @@ module.exports = () => {
         mockRequest.body = mockRequestBodyProducts.at(0);
 
         // fake return
-        db.cart_products.findOrCreate.mockImplementationOnce(() => {
+        db.cart_products.findOrCreate.mockImplementation(() => {
           return [mockProductTable.at(0), true]; // true being item was created
         });
         await addItemToCart(mockRequest, mockResponse);
@@ -185,7 +185,7 @@ module.exports = () => {
         mockRequest.body = mockRequestBodyProducts.at(0);
 
         // fake return
-        db.cart_products.findOrCreate.mockImplementationOnce(() => {
+        db.cart_products.findOrCreate.mockImplementation(() => {
           return [mockProductTable.at(0), false]; // true being item was created
         });
         await addItemToCart(mockRequest, mockResponse);
@@ -228,7 +228,7 @@ module.exports = () => {
         mockRequest.query = mockRequestQueryProduct.at(0);
 
         // fake returns
-        db.cart_products.destroy(() => {});
+        db.cart_products.destroy.mockImplementation(() => {});
         await emptyCart(mockRequest, mockResponse);
 
         expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -245,8 +245,8 @@ module.exports = () => {
         mockRequest.query = mockRequestQueryProduct.at(1);
 
         // fake return
-        db.cart.destroy(() => {});
-        db.cart_products.destroy(() => {});
+        db.cart.destroy.mockImplementation(() => {});
+        db.cart_products.destroy.mockImplementation(() => {});
         await emptyCart(mockRequest, mockResponse);
 
         expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -263,8 +263,8 @@ module.exports = () => {
         mockRequest.query = mockRequestQueryProduct.at(2);
 
         // fake return
-        db.cart.destroy(() => {});
-        db.cart_products.destroy(() => {});
+        db.cart.destroy.mockImplementation(() => {});
+        db.cart_products.destroy.mockImplementation(() => {});
 
         await emptyCart(mockRequest, mockResponse);
 
