@@ -1,6 +1,6 @@
 <div align="center">
   <img src="client/public/logo.png" alt="Soil Logo" height="80px">
-  <h1>SOIL</h1>
+  <h1>SOIL + Backend API</h1>
 </div>
 
 SOIL is a student-made website built with React. It's a place for users to learn about organic foods, getting diet tips & recipes. It's easy to use, with features like signing up, managing profiles, using a shopping cart, and diet planning.
@@ -30,11 +30,11 @@ PORT = 3306
 
 3. Navigate into `s4018548-s4007180-a2/client` & `s4018548-s4007180-a2/server`
 4. Install dependencies, `npm i`
-5. Start the server, `npm start`
+5. Start the server, `npm run dev`
 
 ## GitHub Link
 
-https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a1
+[Project Repository](https://github.com/rmit-fsd-2024-s1/s4018548-s4007180-a2)
 
 ## Dependencies
 
