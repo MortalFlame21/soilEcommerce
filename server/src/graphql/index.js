@@ -24,7 +24,10 @@ graphql.schema = buildSchema(`
         description: String!,
         user_id: Int!,
         product_id: Int!,
-        review_created: String!
+        review_created: String!,
+        username: String!
+        
+        
     }
 
     type Product {
@@ -37,15 +40,33 @@ graphql.schema = buildSchema(`
         size: Int!,
         unit: String!
     }
+
+    type Query {
+        all_reviews: [Review]
+    }
 `);
 
 graphql.root = {
-  addAdmin: async () => {},
-  blockUser: async () => {},
-  unblockUser: async () => {},
-  addProduct: async () => {},
-  editProduct: async () => {},
-  deleteProduct: async () => {},
+    all_reviews: async () => {
+        const reviews = await db.review.findAll({
+            include: [{
+                model: db.users,
+                as: 'User',
+                attributes: ['username']
+            }]
+        });
+
+        return reviews.map(review => ({
+            ...review.get(),
+            username: review.User.username
+        }));
+    },
+    addAdmin: async () => { },
+    blockUser: async () => { },
+    unblockUser: async () => { },
+    addProduct: async () => { },
+    editProduct: async () => { },
+    deleteProduct: async () => { },
 };
 
 module.exports = graphql;
