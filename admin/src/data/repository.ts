@@ -7,7 +7,7 @@ const GRAPH_QL_URL = "http://localhost:4000/graphql";
 async function getReviews() {
   const query = gql`
     {
-      latest_reviews {
+      all_reviews {
         id
         stars
         title
@@ -22,7 +22,7 @@ async function getReviews() {
 
   const data = await request(GRAPH_QL_URL, query);
   //@ts-expect-error for idk
-  return data.latest_reviews;
+  return data.all_reviews;
 }
 
 export { getReviews };

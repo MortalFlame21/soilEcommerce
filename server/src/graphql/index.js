@@ -1,5 +1,10 @@
 const { gql } = require("apollo-server-express");
 const db = require("../database/");
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
+const REVIEW_ADDED = 'REVIEW_ADDED';
+
 
 const typeDefs = gql`
     type Admin {
@@ -46,6 +51,10 @@ const typeDefs = gql`
         numProducts: Int
         numReviews: Int
     }
+
+    type Subscription {
+        latest_reviews: [Review]
+    }
 `;
 
 const resolvers = {
@@ -57,22 +66,6 @@ const resolvers = {
                     as: 'User',
                     attributes: ['username']
                 }]
-            });
-
-            return reviews.map(review => ({
-                ...review.get(),
-                username: review.User.username
-            }));
-        },
-        latest_reviews: async () => {
-            const reviews = await db.review.findAll({
-                include: [{
-                    model: db.users,
-                    as: 'User',
-                    attributes: ['username']
-                }],
-                order: [['review_created', 'DESC']],
-                limit: 2
             });
 
             return reviews.map(review => ({
@@ -92,7 +85,12 @@ const resolvers = {
             const numReviews = await db.review.count();
             return numReviews;
         },
-    }
+    },
+    Subscription: {
+        latest_reviews: {
+            subscribe: () => pubsub.asyncIterator([REVIEW_ADDED]),
+        },
+    },
 };
 
 module.exports = {

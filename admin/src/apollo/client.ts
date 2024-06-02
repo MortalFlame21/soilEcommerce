@@ -1,5 +1,4 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { createClient } from "graphql-ws";
 import { WebSocketLink } from "@apollo/client/link/ws";
 
 const GRAPHQL_ENDPOINT = "ws://localhost:4000/graphql";
@@ -9,7 +8,7 @@ const link = new WebSocketLink({
   options: {
     reconnect: true,
   },
-  webSocketImpl: createClient,
+  webSocketImpl: WebSocket, // Use native WebSocket
 });
 
 const cache = new InMemoryCache();
