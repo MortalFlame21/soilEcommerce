@@ -58,6 +58,22 @@ PORT = 3306
 - Images from [Unsplash](https://unsplash.com/)
 - Logo made with [Logo Maker](https://logo.com/)
 
+## Tests
+
+- To test the backend of the website, first follow the [Usage guide](#usage)
+
+1. Once all set up navigate into `/server/tests`
+2. Run `npm run test`
+
+- How were the tests set up?
+
+  - Using jest we implemented generic and some edge case requests and mocked what a generic and valid return would be
+
+- For more detail regarding the individual unit tests:
+
+  - Refer to `server/tests/cartTests.js` about the shopping cart features
+  - Refer to `server/tests/reviewTests.js` about the review features
+
 ## Made by
 
 - [Russell Sheikh](https://github.com/Russell0014)

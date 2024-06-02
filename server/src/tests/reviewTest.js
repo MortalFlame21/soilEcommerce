@@ -18,9 +18,9 @@ const mockReviewTable = [
     title: "Awesome product",
     description: "Very tasty product would buy again.",
     stars: 5,
-    review_created: "2024-05-30T11:58:03.000Z",
+    review_created: "2024-05-30T11:58:03.000Z", // fake date
     User: {
-      username: "user1@email.com",
+      username: "user1@email.com", // fake username from user table
     },
   },
   {
@@ -30,14 +30,15 @@ const mockReviewTable = [
     description:
       "Product was rotten when I purchased it, 'organic and fresh' is misleading.",
     stars: 1,
-    review_created: "2024-05-29T11:58:03.000Z",
+    review_created: "2024-05-29T11:58:03.000Z", // fake date
     User: {
-      username: "user2@email.com",
+      username: "user2@email.com", // fake username from user table
     },
   },
 ];
 
 const mockRequestBodyProduct = [
+  // valid review request
   {
     user_id: 7,
     product_id: 4,
@@ -76,15 +77,17 @@ module.exports = () => {
 
     describe("1. Creating a product review, test POST method", () => {
       test("Valid user adds new product review", async () => {
-        // fake body req
+        // fake body req, valid review request
         mockRequest.body = mockRequestBodyProduct.at(0);
 
         // fake returns
         db.users.findOne.mockImplementation(() => {
           return { user_id: mockRequestQueryProduct.at(0).user_id };
         });
+        // not real return below, however this would suffice for valid return
+        // return for this would be too long
         db.product.findByPk.mockImplementation(() => {
-          return "s"; // not the actual return
+          return "some valid return";
         });
         db.review.findAll.mockImplementation(() => {
           return mockReviewTable.at(0);
@@ -97,6 +100,7 @@ module.exports = () => {
         expect(mockResponse.status).toHaveBeenCalledWith(200);
 
         expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        // notify user that review was successfully created
         expect(mockResponse.json).toHaveBeenCalledWith({
           message: `Success. user_id: ${
             mockReviewTable.at(0).user_id
@@ -107,7 +111,7 @@ module.exports = () => {
 
     describe("2. Deleting a product review, test DELETE method", () => {
       test("Valid user removes existing product review", async () => {
-        // fake body req
+        // fake body req, valid query request
         mockRequest.query = mockRequestQueryProduct.at(1);
 
         // fake returns
@@ -125,6 +129,7 @@ module.exports = () => {
         expect(mockResponse.status).toHaveBeenCalledWith(200);
 
         expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        // notify user that review was successfully removed
         expect(mockResponse.json).toHaveBeenCalledWith({
           message: `user_id: ${
             mockRequestQueryProduct.at(1).user_id
@@ -152,6 +157,7 @@ module.exports = () => {
         expect(mockResponse.status).toHaveBeenCalledWith(200);
 
         expect(mockResponse.json).toHaveBeenCalledTimes(1);
+        // return the updated review row
         expect(mockResponse.json).toHaveBeenCalledWith(mockReviewTable.at(0));
       });
     });
