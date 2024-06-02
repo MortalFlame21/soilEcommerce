@@ -27,6 +27,12 @@ function Sidebar() {
           Reviews
         </Nav.Link>
       </Nav.Item>
+      <Nav.Item className="mt-auto">
+        {" "}
+        <Nav.Link as={Link} to="/logout" className="no-blue-link text-center">
+          Logout
+        </Nav.Link>
+      </Nav.Item>
     </Nav>
   );
 }
