@@ -65,11 +65,13 @@ export default function ReviewsForm({
   async function getUserReview() {
     if (!user) {
       setIsReviewed(() => false);
-      return;
+    } else {
+      const _userReview = await getProductReviews(productId, user?.user_id);
+      setIsReviewed(() => _userReview.length > 0);
+      setUserReview(() =>
+        _userReview.length > 0 ? _userReview[0] : undefined
+      );
     }
-    const _userReview = await getProductReviews(productId, user?.user_id);
-    setIsReviewed(() => _userReview.length > 0);
-    setUserReview(() => (_userReview.length > 0 ? _userReview[0] : undefined));
 
     const _userReviews = await getProductReviews(productId);
     setStars(
